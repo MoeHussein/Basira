@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BASIRA — تطبيق الأخصائي</title>
+<style>
+:root{--ink:#13212B;--muted:#4B5A63;--line:#D5DDDB;--bg:#EEF2F1;--card:#fff;--teal:#0F766E;--teal-soft:#D3ECE8;--red:#B42318;--red-soft:#FDE2DD;--amber:#8A5A00;--amber-soft:#FFF2CC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;font-size:15px;line-height:1.5}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+header{background:var(--ink);color:#fff;padding:10px 18px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+header h1{margin:0;font-size:18px;font-weight:600}
+.conn{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.conn select,.conn button{font:inherit;height:36px;border-radius:8px;border:1px solid #4B5A63;padding:0 10px}
+.conn select{background:#1E3240;color:#fff}
+.conn button{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700;cursor:pointer}
+.pill{font-size:12.5px;padding:3px 10px;border-radius:999px;background:#2A3B47;color:#C9D3D1}
+.pill.on{background:#0B5752;color:#fff}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:.04em;direction:ltr}
+.badge .dot{width:9px;height:9px;border-radius:50%}
+.st-READY,.st-PARKED,.st-OFFLINE{background:#E7ECEB;color:var(--ink)} .st-READY .dot,.st-PARKED .dot,.st-OFFLINE .dot{background:var(--muted)}
+.st-MOVING,.st-VERIFYING{background:var(--amber-soft);color:#7A5200} .st-MOVING .dot,.st-VERIFYING .dot{background:#C98A00}
+.st-CONFIRMED{background:var(--teal-soft);color:#0B5752} .st-CONFIRMED .dot{background:var(--teal)}
+.st-FAULT{background:var(--red-soft);color:#8E1B0E} .st-FAULT .dot{background:#C2261A}
+.banner{display:none;margin:12px 16px 0;padding:10px 14px;border-radius:10px;font-weight:600}
+.banner.show{display:block}
+.banner.warn{background:var(--amber-soft);color:#5C3D00;border:1px solid #E8C66A}
+.banner.err{background:var(--red-soft);color:#7A1A10;border:1px solid #F0A79B}
+main{max-width:1400px;margin:0 auto;padding:16px;display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr) minmax(0,370px);gap:16px}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h2{margin:0 0 10px;font-size:16px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:#fff;color:var(--ink);font:inherit;font-weight:600;height:42px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.rx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.rx .cell{border:1px solid var(--line);border-radius:10px;padding:8px 5px;text-align:center;min-width:0}
+.rx .lab{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.rx .val{font-size:23px;font-weight:600;direction:ltr;font-variant-numeric:tabular-nums}
+.rx .btns{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+button.sm{height:36px;min-width:0;padding:0;border:1px solid #C9D3D1;border-radius:8px;background:#F4F6F5;font:inherit;font-size:13px;font-weight:600;cursor:pointer;direction:ltr}
+button.big{width:100%;height:46px;border:0;border-radius:10px;background:var(--teal);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;margin-top:12px}
+button.big:disabled,button.tool:disabled{opacity:.45;cursor:not-allowed}
+button.stop{background:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button.tool{height:40px;border:1px solid #C9D3D1;border-radius:10px;background:#fff;font:inherit;font-weight:600;cursor:pointer}
+button.tool.on{background:var(--teal-soft);border-color:var(--teal)}
+button.warn{border-color:#E3A99E;color:#8E1B0E}
+.kv{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed #E1E7E5;font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--muted)}
+.kv b{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;text-align:left}
+label.inl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;margin:6px 0}
+label.inl input,label.inl select{font:inherit;padding:4px 6px;border:1px solid #C9D3D1;border-radius:8px;width:120px}
+.devwrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+@media (max-width:700px){.devwrap{grid-template-columns:1fr}}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;margin-top:6px}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-inline-end:5px}
+.chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative}
+.chartbox .tag{position:absolute;top:8px;inset-inline-start:8px;font-size:12px;background:rgba(19,33,43,.8);color:#fff;padding:2px 8px;border-radius:6px}
+.log{max-height:220px;overflow:auto;font-size:13px}
+.log div{padding:3px 0;border-bottom:1px dashed #E1E7E5}
+.note{font-size:12.5px;color:var(--muted)}
+.res b{font-size:16.5px}
+.hidden{display:none !important}
+details summary{cursor:pointer;font-weight:600}
+textarea{width:100%;font:13px ui-monospace,Menlo,Consolas,monospace;direction:ltr;border:1px solid #C9D3D1;border-radius:8px;padding:6px}
+footer{max-width:1400px;margin:0 auto;padding:0 16px 24px;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>بصيرة BASIRA — تطبيق الأخصائي</h1>
+  <div class="conn">
+    <select id="mode" aria-label="طريقة الاتصال">
+      <option value="sim">محاكاة (بدون جهاز)</option>
+      <option value="usb">الجهاز عبر USB</option>
+      <option value="wifi">الجهاز عبر Wi-Fi</option>
+    </select>
+    <button id="connect">اتصال</button>
+    <span id="link" class="pill">غير متصل</span>
+    <span id="stateBadge" class="badge st-OFFLINE"><span class="dot"></span><span id="stateText">OFFLINE</span></span>
+  </div>
+</header>
+<div id="calBanner" class="banner warn">الجهاز يعمل بنموذج معايرة اسمي (غير مُعاير) — للاختبار على المنضدة فقط، وليس للاستخدام على أشخاص.</div>
+<div id="faultBanner" class="banner err"></div>
+
+<main>
+<section class="stack" aria-label="الفحص">
+  <div class="card">
+    <h2>الفحص</h2>
+    <div class="seg" role="group" aria-label="العين">
+      <button id="eyeR" aria-pressed="true">العين اليمنى R</button>
+      <button id="eyeL" aria-pressed="false">العين اليسرى L</button>
+    </div>
+    <div class="rx">
+      <div class="cell"><div class="lab">SPH</div><div class="val" id="vS">0.00</div>
+        <div class="btns"><button class="sm" data-d="S,-0.25">−0.25</button><button class="sm" data-d="S,0.25">+0.25</button></div></div>
+      <div class="cell"><div class="lab">CYL</div><div class="val" id="vC">0.00</div>
+        <div class="btns"><button class="sm" data-d="C,-0.25">−0.25</button><button class="sm" data-d="C,0.25">+0.25</button></div></div>
+      <div class="cell"><div class="lab">AXIS</div><div class="val" id="vA">—</div>
+        <div class="btns"><button class="sm" data-d="A,-5">−5°</button><button class="sm" data-d="A,5">+5°</button></div></div>
+    </div>
+    <button class="big" id="apply">تطبيق الإعداد</button>
+    <div class="note" id="dirty" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card">
+    <h2>التنقيح</h2>
+    <div class="grid2">
+      <button class="tool" id="jcc1">متقاطعة: وضع 1</button>
+      <button class="tool" id="jcc2">متقاطعة: وضع 2</button>
+      <button class="tool" id="jccOff">إلغاء المتقاطعة</button>
+      <button class="tool" id="fog">ضباب <span class="ltr">+1.00 D</span></button>
+      <button class="tool" id="occ">حجب العين الأخرى</button>
+      <button class="tool" id="demo">جولة تلقائية (محاكاة)</button>
+    </div>
+    <p class="note">الأسطوانة المتقاطعة <span class="ltr">±0.25</span> تُضاف في متجه القدرة: تتحرك الحلقتان فقط ويبقى المكافئ الكروي ثابتًا.</p>
+  </div>
+
+  <div class="card">
+    <h2>الأمان</h2>
+    <button class="big stop" id="stop">إيقاف فوري</button>
+    <button class="tool" id="reset" style="width:100%;margin-top:8px">إعادة الضبط بعد العطل</button>
+    <div id="simFaults" class="grid2" style="margin-top:8px">
+      <button class="tool warn" id="fSensor">محاكاة: فصل حسّاس</button>
+      <button class="tool warn" id="fStall">محاكاة: انحشار محرك</button>
+      <button class="tool warn" id="fLink">محاكاة: انقطاع الاتصال</button>
+      <button class="tool" id="fClear">محاكاة: إصلاح العطل</button>
+    </div>
+    <p class="note">أي عطل يوقف الحركة ويجعل التصحيح "غير معروف". لا تُحفظ نتيجة إلا بعد CONFIRMED من حسّاسات الجهاز.</p>
+  </div>
+</section>
+
+<section class="stack" aria-label="الجهاز">
+  <div class="card">
+    <h2>داخل الجهاز — <span id="devEye">العين اليمنى</span> (كما يراه الفاحص، اصطلاح TABO)</h2>
+    <div class="devwrap">
+      <div><svg id="dev" viewBox="0 0 360 330" role="img" aria-label="عدستا الأسطوانة الدوّارتان وصفيحتا ألفاريز"></svg>
+        <div class="legend"><span><i style="border-color:#0F766E"></i>محور <span class="ltr">+3.00</span></span><span><i style="border-color:#B4410C;border-top-style:dashed"></i>محور <span class="ltr">−3.00</span></span><span><i style="border-color:#1D4ED8;border-top-style:dotted;border-top-width:2px"></i>محور الأسطوانة الناتجة</span></div></div>
+      <div>
+        <div class="kv"><span>إزاحة صفيحتي ألفاريز</span><b id="kD">—</b></div>
+        <div class="kv"><span>الحلقة <span class="ltr">+</span> (α)</span><b id="kAl">—</b></div>
+        <div class="kv"><span>الحلقة <span class="ltr">−</span> (β)</span><b id="kBe">—</b></div>
+        <div class="kv"><span>الحسّاسات</span><b id="kSens">—</b></div>
+        <div class="kv"><span>الحاجب (R / L)</span><b id="kOcc">—</b></div>
+        <div class="kv"><span>نموذج المعايرة</span><b id="kModel">—</b></div>
+        <div class="kv"><span>البرنامج الثابت</span><b id="kFw">—</b></div>
+        <p class="note" style="margin-top:10px">المواضع هنا من حسّاسات الجهاز (رسالة <span class="ltr">status</span>). الجهاز يحسب مواضع العناصر من الوصفة بنموذج المعايرة الخاص به.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="patientCard">
+    <h2>ما يراه المريض (محاكاة)</h2>
+    <div class="chartbox">
+      <span class="tag" id="chartTag">لوحة القراءة</span>
+      <svg id="chart" viewBox="0 0 600 300" role="img" aria-label="لوحة قراءة تتشوش حسب الخطأ المتبقي">
+        <defs><filter id="astig" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur id="gb" stdDeviation="0 0"/></filter></defs>
+        <rect width="600" height="300" fill="#fff"/>
+        <g id="rot" filter="url(#astig)"><g id="unrot">
+          <text x="300" y="92" text-anchor="middle" font-size="80" font-weight="700" fill="#111">E</text>
+          <text x="300" y="160" text-anchor="middle" font-size="46" font-weight="700" fill="#111" letter-spacing="18">F P</text>
+          <text x="300" y="210" text-anchor="middle" font-size="30" font-weight="700" fill="#111" letter-spacing="12">T O Z</text>
+          <text x="300" y="248" text-anchor="middle" font-size="20" font-weight="700" fill="#111" letter-spacing="9">L P E D</text>
+          <text x="300" y="278" text-anchor="middle" font-size="13" font-weight="700" fill="#111" letter-spacing="6">P E C F D</text>
+          <g stroke="#111" stroke-width="3"><line x1="70" y1="150" x2="130" y2="150"/><line x1="100" y1="120" x2="100" y2="180"/><line x1="79" y1="129" x2="121" y2="171"/><line x1="121" y1="129" x2="79" y2="171"/></g>
+        </g></g>
+      </svg>
+    </div>
+    <div class="kv" style="margin-top:8px"><span>الخطأ المتبقي بعد التكيّف</span><b id="kBlur">—</b></div>
+    <p class="note">المريض الافتراضي يتكيّف حتى <span class="ltr" id="ampTxt">2.00 D</span>: الإفراط في السالب يُعوَّض بالتكيّف، والنقص لا يُعوَّض (لذلك يُستعمل الضباب). اللوحة على البُعد المُدخل.</p>
+  </div>
+  <div class="card hidden" id="realPatientCard">
+    <h2>المريض</h2>
+    <p>المريض ينظر إلى لوحة القراءة الحقيقية. اسأله عن الوضوح بعد كل تغيير، وانتظر حالة <span class="ltr">CONFIRMED</span> قبل السؤال.</p>
+  </div>
+</section>
+
+<section class="stack" aria-label="النتائج">
+  <div class="card res">
+    <h2>النتيجة — <span id="resEye">العين اليمنى</span></h2>
+    <div class="kv"><span>المطلوب (بعد التنقيح)</span><b id="rReq">—</b></div>
+    <div class="kv"><span>المؤكَّد من الحسّاسات (مستوى الجهاز)</span><b id="rConf">—</b></div>
+    <div class="kv"><span>وصفة البعيد بعد تصحيح بُعد اللوحة</span><b id="rDist">—</b></div>
+    <div class="kv"><span>وصفة النظارة (مسافة القمة <span class="ltr">12 mm</span>)</span><b id="rSpec">—</b></div>
+    <div class="kv"><span>مستوى القرنية (مدخل لتركيب العدسات اللاصقة)</span><b id="rCorn">—</b></div>
+    <label class="inl">مسافة القمة للجهاز (mm)<input id="bvd" type="number" min="8" max="20" step="0.5" value=""></label>
+    <label class="inl">المسافة بين الحدقتين PD (mm)<input id="pd" type="number" min="40" max="80" step="0.5" value=""></label>
+    <label class="inl">بُعد لوحة القراءة (m)<input id="dist" type="number" min="3" max="10" step="0.5" value="6"></label>
+    <button class="big" id="save" style="background:var(--ink)">حفظ نتيجة العين</button>
+    <button class="tool" id="download" style="width:100%;margin-top:8px">تنزيل سجل الفحص (JSON)</button>
+    <div class="note" id="saved" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card" id="patientSetup">
+    <h2>المريض الافتراضي (محاكاة)</h2>
+    <label class="inl">الحالة<select id="patient"><option value="A">حالة أ</option><option value="B">حالة ب</option><option value="C">حالة ج</option><option value="X">عشوائية</option></select></label>
+    <label class="inl">قدرة التكيّف (D)<input id="amp" type="number" min="0" max="8" step="0.5" value="2"></label>
+    <button class="tool" id="reveal" style="width:100%">إظهار الوصفة الحقيقية (للمدرّب)</button>
+    <div id="truth" class="hidden" style="margin-top:8px">
+      <div class="kv"><span>العين اليمنى (عند الجهاز)</span><b id="tR"></b></div>
+      <div class="kv"><span>العين اليسرى (عند الجهاز)</span><b id="tL"></b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>السجل</h2>
+    <div class="log" id="log"></div>
+    <details style="margin-top:10px"><summary>وحدة الهندسة (رسائل البروتوكول)</summary>
+      <p class="note">أرسل أي رسالة من <span class="ltr">docs/PROTOCOL.md</span>، مثل <span class="ltr">{"t":"calib_get"}</span> أو <span class="ltr">{"t":"jog","id":1,"axis":0,"duty":0.3,"ms":200}</span>.</p>
+      <textarea id="raw" rows="2">{"t":"calib_get"}</textarea>
+      <button class="tool" id="sendRaw" style="width:100%;margin-top:6px">إرسال</button>
+      <label class="inl" style="margin-top:8px"><span>عرض كل الرسائل في السجل</span><input type="checkbox" id="verbose" style="width:auto"></label>
+    </details>
+  </div>
+</section>
+</main>
+<footer>البروتوكول v1 مشترك بين الجهاز والمحاكي: التطبيق نفسه يعمل مع المحاكي أو مع الجهاز عبر USB أو Wi-Fi. وضع المحاكاة لا يفحص أشخاصًا حقيقيين.</footer>
+
+<script src="js/optics.js"></script>
+<script src="js/sim_device.js"></script>
+<script src="js/transports.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
