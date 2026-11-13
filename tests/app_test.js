@@ -81,5 +81,18 @@ function rig() {
   check(r.d.state === "FAULT" && r.last("fault").code === "LINK", "link watchdog, got " + r.d.state);
   console.log("simulated device: exam, ranges, sensor, stall, link watchdog");
 }
+{
+  const r = rig();
+  r.run(20);
+  r.send({ t: "stop", id: 1 });
+  check(r.d.state === "FAULT" && r.last("fault").code === "USER_STOP", "operator STOP latches FAULT");
+  r.send({ t: "jog", id: 2, axis: 1, duty: 0.5, ms: 100 });
+  check(r.last("err")?.id === 2 && r.last("err")?.code === "FAULT", "jog refused after STOP");
+  r.send({ t: "occlude", id: 3, eye: "R", on: true });
+  check(r.last("err")?.id === 3 && r.last("err")?.code === "FAULT" && !r.d.occ.R, "occluder stays in place after STOP");
+  r.send({ t: "reset", id: 4 });
+  r.send({ t: "occlude", id: 5, eye: "R", on: true });
+  check(r.last("ack")?.id === 5 && r.d.occ.R, "occluder can operate after reset");
+}
 console.log(`${checks} checks, ${fails} failed`);
 process.exit(fails ? 1 : 0);

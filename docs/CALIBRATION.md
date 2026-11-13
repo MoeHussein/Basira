@@ -28,6 +28,7 @@ python3 calibration/capture_session.py --port /dev/ttyUSB0 --eye R --fit 40 --ho
 
 - The device moves to 60 random settings and confirms each one from its sensors.
 - At each setting, read the lensmeter through the whole optical stack from the eye side, and type `S C AX`.
+- The fitter wraps the raw encoder difference at 0°/360° to match the firmware's initial reference. The plate must stay within half a shaft turn of its zero. Whole turns of either cylinder ring are optically equivalent.
 - Blueprint: 30–60 fit readings and at least 20 held-out readings per eye.
 
 ## 4. Fit and validate
@@ -40,14 +41,15 @@ python3 calibration/fit_calibration.py readings_R.csv --out calib_out --model-id
 - **Pass criteria:** on the held-out readings,
   - the 95th percentile of |ΔM| ≤ 0.12 D;
   - the 95th percentile of |ΔC| ≤ 0.12 D;
-  - at least 95 % of axes within max(asin(0.12 / 2|C|), lensmeter axis resolution).
-- **Lensmeter resolution:** `AXIS_FLOOR_DEG` in `calib_model.py` is set to 2°. Set it to your instrument's actual value.
+  - the 95th percentile of the combined cylinder-vector error, 2·hypot(ΔJ0, ΔJ45), ≤ 0.12 D;
+  - at least 95 % of axes within asin(0.12 / (2|C|)), expressed in degrees, for settings with measured |C| ≥ 0.12 D.
+- **Lensmeter capability:** at 6 D the axis limit is approximately 0.57°. Record the reference instrument's resolution and repeatability. If it cannot resolve the limit, record the result as unverified and use a finer reference measurement.
 - **Output:** `calib_set_R.json`, with `"fitted": true` only on PASS.
-- **Check the fit itself:** `python3 calibration/fit_calibration.py --selftest` runs on synthetic data with known parameters, and includes a negative control that must fail.
+- **Check the fit itself:** `python3 calibration/fit_calibration.py --selftest` verifies recovery of known synthetic parameters and checks that noiseless holdouts pass. The supplied noisy holdouts and a planted sphere bias are rejected.
 
 ## 5. Upload
 
-Send the content of `calib_set_R.json` (one line) through the app's engineering box or a serial monitor. The device saves it to flash and echoes `calib`. From then on, `confirmed.calibrated` is `true` and `model` carries your model id.
+After a physical holdout passes, send the content of `calib_set_R.json` (one line) through the app's engineering box or a serial monitor. The device saves it to flash and echoes `calib`. The `confirmed.calibrated` field reflects the stored `fitted` flag and `model` carries the model ID.
 
 ## Periodic check
 
@@ -58,4 +60,4 @@ python3 calibration/capture_session.py --port /dev/ttyUSB0 --eye R --fit 0 --hol
 python3 calibration/fit_calibration.py check_R.csv --check calib_out/calib_set_R.json
 ```
 
-- A failed check makes the model invalid: refit.
+- The periodic check applies the same optical limits to at least 10 readings. If it fails, invalidate the model and refit. Recheck models accepted under the earlier 2° floor against the current criteria before relying on their fitted status.

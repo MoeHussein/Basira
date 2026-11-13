@@ -1,12 +1,14 @@
 # BASIRA calibration report
 
-Source: `SYNTHETIC_calibration_readings.csv`  
-Date: 2026-11-13  
-Acceptance on >= 20 held-out settings: 95th percentile |dM| and |dC| <= 0.12 D; >= 95 % of axes within max(asin(0.12 / 2|C|), 2.0 deg lensmeter resolution).
+Source: `SYNTHETIC_calibration_readings.csv`
+
+Date: 2026-11-14
+
+Acceptance on >= 20 held-out settings: 95th percentiles of |dM|, |dC| and cylinder-vector error 2|dJ| <= 0.12 D. For |C| >= 0.12 D, >= 95 % of axes must be within asin(0.12 / 2|C|).
 
 **SYNTHETIC DATA - not a device calibration.**
 
-## Eye R: PASS
+## Eye R: FAIL
 
 | parameter | value | standard error |
 |---|---|---|
@@ -19,10 +21,11 @@ Acceptance on >= 20 held-out settings: 95th percentile |dM| and |dC| <= 0.12 D; 
 | J0off | 0.0287 | 0.0054 |
 | J45off | -0.0280 | 0.0054 |
 
-Fit: 40 readings, residual RMS 0.034 D.  
-Held-out: 20 readings: p95 |dM| 0.044 D, p95 |dC| 0.059 D, axes within tolerance 100 % of 20, max |dM| 0.048 D, mean dM -0.007 D (p95 cylinder-vector error 0.298 D, for information).
+Fit: 40 readings, residual RMS 0.034 D.
 
-## Eye L: PASS
+Held-out: 20 readings: p95 |dM| 0.044 D, p95 |dC| 0.059 D, p95 cylinder-vector error 0.298 D, axes within tolerance: 60 % of 20, max |dM| 0.048 D, mean dM -0.007 D.
+
+## Eye L: FAIL
 
 | parameter | value | standard error |
 |---|---|---|
@@ -35,5 +38,6 @@ Held-out: 20 readings: p95 |dM| 0.044 D, p95 |dC| 0.059 D, axes within tolerance
 | J0off | -0.0314 | 0.0042 |
 | J45off | 0.0299 | 0.0042 |
 
-Fit: 40 readings, residual RMS 0.026 D.  
-Held-out: 20 readings: p95 |dM| 0.037 D, p95 |dC| 0.034 D, axes within tolerance 100 % of 20, max |dM| 0.038 D, mean dM +0.002 D (p95 cylinder-vector error 0.220 D, for information).
+Fit: 40 readings, residual RMS 0.026 D.
+
+Held-out: 20 readings: p95 |dM| 0.037 D, p95 |dC| 0.034 D, p95 cylinder-vector error 0.220 D, axes within tolerance: 80 % of 20, max |dM| 0.038 D, mean dM +0.002 D.

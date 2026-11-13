@@ -34,8 +34,10 @@ async def main():
         await pg.wait_for_function("window.BASIRA_APP.status.st === 'FAULT'", timeout=3000)
         if (await pg.inner_text("#rConf")) != "غير معروف": fails.append("result not marked unknown in FAULT")
         if not await pg.is_visible("#faultBanner"): fails.append("fault banner hidden")
+        if not await pg.is_disabled("#occ"): fails.append("occluder control still enabled in FAULT")
         await pg.click("#fClear"); await pg.click("#reset")
         await pg.wait_for_function("window.BASIRA_APP.status.st === 'READY'", timeout=3000)
+        if not await pg.is_enabled("#occ"): fails.append("occluder control still disabled after reset")
         # exam record download
         async with pg.expect_download() as dl:
             await pg.click("#download")
