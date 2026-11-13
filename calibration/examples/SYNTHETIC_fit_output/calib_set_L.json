@@ -1,0 +1,1 @@
+{"t": "calib_set", "id": 1, "eye": "L", "cal": {"P0": -0.0936, "k": 2.0512, "Pp": 2.9681, "Pm": -3.0389, "J0off": -0.0314, "J45off": 0.0299, "model_id": "SYNTH-L"}, "mech": {"zero_deg": [120.0, 176.805, 1.888]}, "fitted": true}
