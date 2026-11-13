@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BASIRA — تطبيق الأخصائي</title>
+<style>
+:root{--ink:#13212B;--muted:#4B5A63;--line:#D5DDDB;--bg:#EEF2F1;--card:#fff;--teal:#0F766E;--teal-soft:#D3ECE8;--red:#B42318;--red-soft:#FDE2DD;--amber:#8A5A00;--amber-soft:#FFF2CC}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;font-size:15px;line-height:1.5}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+header{background:var(--ink);color:#fff;padding:10px 18px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+header h1{margin:0;font-size:18px;font-weight:600}
+.conn{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.conn select,.conn button{font:inherit;height:36px;border-radius:8px;border:1px solid #4B5A63;padding:0 10px}
+.conn select{background:#1E3240;color:#fff}
+.conn button{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700;cursor:pointer}
+.pill{font-size:12.5px;padding:3px 10px;border-radius:999px;background:#2A3B47;color:#C9D3D1}
+.pill.on{background:#0B5752;color:#fff}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:.04em;direction:ltr}
+.badge .dot{width:9px;height:9px;border-radius:50%}
+.st-READY,.st-PARKED,.st-OFFLINE{background:#E7ECEB;color:var(--ink)} .st-READY .dot,.st-PARKED .dot,.st-OFFLINE .dot{background:var(--muted)}
+.st-MOVING,.st-VERIFYING{background:var(--amber-soft);color:#7A5200} .st-MOVING .dot,.st-VERIFYING .dot{background:#C98A00}
+.st-CONFIRMED{background:var(--teal-soft);color:#0B5752} .st-CONFIRMED .dot{background:var(--teal)}
+.st-FAULT{background:var(--red-soft);color:#8E1B0E} .st-FAULT .dot{background:#C2261A}
+.banner{display:none;margin:12px 16px 0;padding:10px 14px;border-radius:10px;font-weight:600}
+.banner.show{display:block}
+.banner.warn{background:var(--amber-soft);color:#5C3D00;border:1px solid #E8C66A}
+.banner.err{background:var(--red-soft);color:#7A1A10;border:1px solid #F0A79B}
+main{max-width:1400px;margin:0 auto;padding:16px;display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr) minmax(0,370px);gap:16px}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h2{margin:0 0 10px;font-size:16px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ink);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:#fff;color:var(--ink);font:inherit;font-weight:600;height:42px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.rx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.rx .cell{border:1px solid var(--line);border-radius:10px;padding:8px 5px;text-align:center;min-width:0}
+.rx .lab{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.rx .val{font-size:23px;font-weight:600;direction:ltr;font-variant-numeric:tabular-nums}
+.rx .btns{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+button.sm{height:36px;min-width:0;padding:0;border:1px solid #C9D3D1;border-radius:8px;background:#F4F6F5;font:inherit;font-size:13px;font-weight:600;cursor:pointer;direction:ltr}
+button.big{width:100%;height:46px;border:0;border-radius:10px;background:var(--teal);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;margin-top:12px}
+button.big:disabled,button.tool:disabled{opacity:.45;cursor:not-allowed}
+button.stop{background:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button.tool{height:40px;border:1px solid #C9D3D1;border-radius:10px;background:#fff;font:inherit;font-weight:600;cursor:pointer}
+button.tool.on{background:var(--teal-soft);border-color:var(--teal)}
+button.warn{border-color:#E3A99E;color:#8E1B0E}
+.kv{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed #E1E7E5;font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--muted)}
+.kv b{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;text-align:left}
+label.inl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;margin:6px 0}
+label.inl input,label.inl select{font:inherit;padding:4px 6px;border:1px solid #C9D3D1;border-radius:8px;width:120px}
+.devwrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+@media (max-width:700px){.devwrap{grid-template-columns:1fr}}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;margin-top:6px}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-inline-end:5px}
+.chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative}
+.chartbox .tag{position:absolute;top:8px;inset-inline-start:8px;font-size:12px;background:rgba(19,33,43,.8);color:#fff;padding:2px 8px;border-radius:6px}
+.log{max-height:220px;overflow:auto;font-size:13px}
+.log div{padding:3px 0;border-bottom:1px dashed #E1E7E5}
+.note{font-size:12.5px;color:var(--muted)}
+.res b{font-size:16.5px}
+.hidden{display:none !important}
+details summary{cursor:pointer;font-weight:600}
+textarea{width:100%;font:13px ui-monospace,Menlo,Consolas,monospace;direction:ltr;border:1px solid #C9D3D1;border-radius:8px;padding:6px}
+footer{max-width:1400px;margin:0 auto;padding:0 16px 24px;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>بصيرة BASIRA — تطبيق الأخصائي</h1>
+  <div class="conn">
+    <select id="mode" aria-label="طريقة الاتصال">
+      <option value="sim">محاكاة (بدون جهاز)</option>
+      <option value="usb">الجهاز عبر USB</option>
+      <option value="wifi">الجهاز عبر Wi-Fi</option>
+    </select>
+    <button id="connect">اتصال</button>
+    <span id="link" class="pill">غير متصل</span>
+    <span id="stateBadge" class="badge st-OFFLINE"><span class="dot"></span><span id="stateText">OFFLINE</span></span>
+  </div>
+</header>
+<div id="calBanner" class="banner warn">الجهاز يعمل بنموذج معايرة اسمي (غير مُعاير) — للاختبار على المنضدة فقط، وليس للاستخدام على أشخاص.</div>
+<div id="faultBanner" class="banner err"></div>
+
+<main>
+<section class="stack" aria-label="الفحص">
+  <div class="card">
+    <h2>الفحص</h2>
+    <div class="seg" role="group" aria-label="العين">
+      <button id="eyeR" aria-pressed="true">العين اليمنى R</button>
+      <button id="eyeL" aria-pressed="false">العين اليسرى L</button>
+    </div>
+    <div class="rx">
+      <div class="cell"><div class="lab">SPH</div><div class="val" id="vS">0.00</div>
+        <div class="btns"><button class="sm" data-d="S,-0.25">−0.25</button><button class="sm" data-d="S,0.25">+0.25</button></div></div>
+      <div class="cell"><div class="lab">CYL</div><div class="val" id="vC">0.00</div>
+        <div class="btns"><button class="sm" data-d="C,-0.25">−0.25</button><button class="sm" data-d="C,0.25">+0.25</button></div></div>
+      <div class="cell"><div class="lab">AXIS</div><div class="val" id="vA">—</div>
+        <div class="btns"><button class="sm" data-d="A,-5">−5°</button><button class="sm" data-d="A,5">+5°</button></div></div>
+    </div>
+    <button class="big" id="apply">تطبيق الإعداد</button>
+    <div class="note" id="dirty" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card">
+    <h2>التنقيح</h2>
+    <div class="grid2">
+      <button class="tool" id="jcc1">متقاطعة: وضع 1</button>
+      <button class="tool" id="jcc2">متقاطعة: وضع 2</button>
+      <button class="tool" id="jccOff">إلغاء المتقاطعة</button>
+      <button class="tool" id="fog">ضباب <span class="ltr">+1.00 D</span></button>
+      <button class="tool" id="occ">حجب العين الأخرى</button>
+      <button class="tool" id="demo">جولة تلقائية (محاكاة)</button>
+    </div>
+    <p class="note">الأسطوانة المتقاطعة <span class="ltr">±0.25</span> تُضاف في متجه القدرة: تتحرك الحلقتان فقط ويبقى المكافئ الكروي ثابتًا.</p>
+  </div>
+
+  <div class="card">
+    <h2>الأمان</h2>
+    <button class="big stop" id="stop">إيقاف فوري</button>
+    <button class="tool" id="reset" style="width:100%;margin-top:8px">إعادة الضبط بعد العطل</button>
+    <div id="simFaults" class="grid2" style="margin-top:8px">
+      <button class="tool warn" id="fSensor">محاكاة: فصل حسّاس</button>
+      <button class="tool warn" id="fStall">محاكاة: انحشار محرك</button>
+      <button class="tool warn" id="fLink">محاكاة: انقطاع الاتصال</button>
+      <button class="tool" id="fClear">محاكاة: إصلاح العطل</button>
+    </div>
+    <p class="note">أي عطل يوقف الحركة ويجعل التصحيح "غير معروف". لا تُحفظ نتيجة إلا بعد CONFIRMED من حسّاسات الجهاز.</p>
+  </div>
+</section>
+
+<section class="stack" aria-label="الجهاز">
+  <div class="card">
+    <h2>داخل الجهاز — <span id="devEye">العين اليمنى</span> (كما يراه الفاحص، اصطلاح TABO)</h2>
+    <div class="devwrap">
+      <div><svg id="dev" viewBox="0 0 360 330" role="img" aria-label="عدستا الأسطوانة الدوّارتان وصفيحتا ألفاريز"></svg>
+        <div class="legend"><span><i style="border-color:#0F766E"></i>محور <span class="ltr">+3.00</span></span><span><i style="border-color:#B4410C;border-top-style:dashed"></i>محور <span class="ltr">−3.00</span></span><span><i style="border-color:#1D4ED8;border-top-style:dotted;border-top-width:2px"></i>محور الأسطوانة الناتجة</span></div></div>
+      <div>
+        <div class="kv"><span>إزاحة صفيحتي ألفاريز</span><b id="kD">—</b></div>
+        <div class="kv"><span>الحلقة <span class="ltr">+</span> (α)</span><b id="kAl">—</b></div>
+        <div class="kv"><span>الحلقة <span class="ltr">−</span> (β)</span><b id="kBe">—</b></div>
+        <div class="kv"><span>الحسّاسات</span><b id="kSens">—</b></div>
+        <div class="kv"><span>الحاجب (R / L)</span><b id="kOcc">—</b></div>
+        <div class="kv"><span>نموذج المعايرة</span><b id="kModel">—</b></div>
+        <div class="kv"><span>البرنامج الثابت</span><b id="kFw">—</b></div>
+        <p class="note" style="margin-top:10px">المواضع هنا من حسّاسات الجهاز (رسالة <span class="ltr">status</span>). الجهاز يحسب مواضع العناصر من الوصفة بنموذج المعايرة الخاص به.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="patientCard">
+    <h2>ما يراه المريض (محاكاة)</h2>
+    <div class="chartbox">
+      <span class="tag" id="chartTag">لوحة القراءة</span>
+      <svg id="chart" viewBox="0 0 600 300" role="img" aria-label="لوحة قراءة تتشوش حسب الخطأ المتبقي">
+        <defs><filter id="astig" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur id="gb" stdDeviation="0 0"/></filter></defs>
+        <rect width="600" height="300" fill="#fff"/>
+        <g id="rot" filter="url(#astig)"><g id="unrot">
+          <text x="300" y="92" text-anchor="middle" font-size="80" font-weight="700" fill="#111">E</text>
+          <text x="300" y="160" text-anchor="middle" font-size="46" font-weight="700" fill="#111" letter-spacing="18">F P</text>
+          <text x="300" y="210" text-anchor="middle" font-size="30" font-weight="700" fill="#111" letter-spacing="12">T O Z</text>
+          <text x="300" y="248" text-anchor="middle" font-size="20" font-weight="700" fill="#111" letter-spacing="9">L P E D</text>
+          <text x="300" y="278" text-anchor="middle" font-size="13" font-weight="700" fill="#111" letter-spacing="6">P E C F D</text>
+          <g stroke="#111" stroke-width="3"><line x1="70" y1="150" x2="130" y2="150"/><line x1="100" y1="120" x2="100" y2="180"/><line x1="79" y1="129" x2="121" y2="171"/><line x1="121" y1="129" x2="79" y2="171"/></g>
+        </g></g>
+      </svg>
+    </div>
+    <div class="kv" style="margin-top:8px"><span>الخطأ المتبقي بعد التكيّف</span><b id="kBlur">—</b></div>
+    <p class="note">المريض الافتراضي يتكيّف حتى <span class="ltr" id="ampTxt">2.00 D</span>: الإفراط في السالب يُعوَّض بالتكيّف، والنقص لا يُعوَّض (لذلك يُستعمل الضباب). اللوحة على البُعد المُدخل.</p>
+  </div>
+  <div class="card hidden" id="realPatientCard">
+    <h2>المريض</h2>
+    <p>المريض ينظر إلى لوحة القراءة الحقيقية. اسأله عن الوضوح بعد كل تغيير، وانتظر حالة <span class="ltr">CONFIRMED</span> قبل السؤال.</p>
+  </div>
+</section>
+
+<section class="stack" aria-label="النتائج">
+  <div class="card res">
+    <h2>النتيجة — <span id="resEye">العين اليمنى</span></h2>
+    <div class="kv"><span>المطلوب (بعد التنقيح)</span><b id="rReq">—</b></div>
+    <div class="kv"><span>المؤكَّد من الحسّاسات (مستوى الجهاز)</span><b id="rConf">—</b></div>
+    <div class="kv"><span>وصفة البعيد بعد تصحيح بُعد اللوحة</span><b id="rDist">—</b></div>
+    <div class="kv"><span>وصفة النظارة (مسافة القمة <span class="ltr">12 mm</span>)</span><b id="rSpec">—</b></div>
+    <div class="kv"><span>مستوى القرنية (مدخل لتركيب العدسات اللاصقة)</span><b id="rCorn">—</b></div>
+    <label class="inl">مسافة القمة للجهاز (mm)<input id="bvd" type="number" min="8" max="20" step="0.5" value=""></label>
+    <label class="inl">المسافة بين الحدقتين PD (mm)<input id="pd" type="number" min="40" max="80" step="0.5" value=""></label>
+    <label class="inl">بُعد لوحة القراءة (m)<input id="dist" type="number" min="3" max="10" step="0.5" value="6"></label>
+    <button class="big" id="save" style="background:var(--ink)">حفظ نتيجة العين</button>
+    <button class="tool" id="download" style="width:100%;margin-top:8px">تنزيل سجل الفحص (JSON)</button>
+    <div class="note" id="saved" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card" id="patientSetup">
+    <h2>المريض الافتراضي (محاكاة)</h2>
+    <label class="inl">الحالة<select id="patient"><option value="A">حالة أ</option><option value="B">حالة ب</option><option value="C">حالة ج</option><option value="X">عشوائية</option></select></label>
+    <label class="inl">قدرة التكيّف (D)<input id="amp" type="number" min="0" max="8" step="0.5" value="2"></label>
+    <button class="tool" id="reveal" style="width:100%">إظهار الوصفة الحقيقية (للمدرّب)</button>
+    <div id="truth" class="hidden" style="margin-top:8px">
+      <div class="kv"><span>العين اليمنى (عند الجهاز)</span><b id="tR"></b></div>
+      <div class="kv"><span>العين اليسرى (عند الجهاز)</span><b id="tL"></b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>السجل</h2>
+    <div class="log" id="log"></div>
+    <details style="margin-top:10px"><summary>وحدة الهندسة (رسائل البروتوكول)</summary>
+      <p class="note">أرسل أي رسالة من <span class="ltr">docs/PROTOCOL.md</span>، مثل <span class="ltr">{"t":"calib_get"}</span> أو <span class="ltr">{"t":"jog","id":1,"axis":0,"duty":0.3,"ms":200}</span>.</p>
+      <textarea id="raw" rows="2">{"t":"calib_get"}</textarea>
+      <button class="tool" id="sendRaw" style="width:100%;margin-top:6px">إرسال</button>
+      <label class="inl" style="margin-top:8px"><span>عرض كل الرسائل في السجل</span><input type="checkbox" id="verbose" style="width:auto"></label>
+    </details>
+  </div>
+</section>
+</main>
+<footer>البروتوكول v1 مشترك بين الجهاز والمحاكي: التطبيق نفسه يعمل مع المحاكي أو مع الجهاز عبر USB أو Wi-Fi. وضع المحاكاة لا يفحص أشخاصًا حقيقيين.</footer>
+
+<script>
+// BASIRA optics model, JavaScript port of physics/basira_optics.py (the definition).
+// tests/app_test.js checks this port against tests/golden_vectors.json.
+var BasiraOptics = (function () {
+  "use strict";
+  var DEG = Math.PI / 180;
+
+  function nominal() { return { P0: 0, k: 2.0, Pp: 3.0, Pm: -3.0, J0off: 0, J45off: 0, delta_max: 5.0, model_id: "NOMINAL" }; }
+
+  function wrap180(a) { a = a % 180; if (a <= -90) a += 180; if (a > 90) a -= 180; return a; }
+
+  function rxToPv(rx) { // rx = {S, C, ax}, minus cylinder
+    return { M: rx.S + rx.C / 2, J0: -(rx.C / 2) * Math.cos(2 * rx.ax * DEG), J45: -(rx.C / 2) * Math.sin(2 * rx.ax * DEG) };
+  }
+  function pvToRx(pv) {
+    var Jm = Math.hypot(pv.J0, pv.J45), C = -2 * Jm, S = pv.M - C / 2;
+    if (Jm < 1e-9) return { S: S, C: 0, ax: 180 };
+    var ax = ((Math.atan2(pv.J45, pv.J0) / 2 / DEG) % 180 + 180) % 180;
+    if (ax < 1e-9) ax = 180;
+    return { S: S, C: C, ax: ax };
+  }
+  function forward(p, c) { // p = {delta, alpha, beta}
+    return {
+      M: c.P0 + c.k * p.delta + (c.Pp + c.Pm) / 2,
+      J0: -(c.Pp / 2) * Math.cos(2 * p.alpha * DEG) - (c.Pm / 2) * Math.cos(2 * p.beta * DEG) + c.J0off,
+      J45: -(c.Pp / 2) * Math.sin(2 * p.alpha * DEG) - (c.Pm / 2) * Math.sin(2 * p.beta * DEG) + c.J45off
+    };
+  }
+  // Target power vector -> positions; returns {ok:true, pos} or {ok:false, error:"SPHERE_RANGE"|"CYL_RANGE"}
+  function inverse(t, c, cur) {
+    var delta = (t.M - c.P0 - (c.Pp + c.Pm) / 2) / c.k;
+    if (Math.abs(delta) > c.delta_max + 1e-9) return { ok: false, error: "SPHERE_RANGE" };
+    var tx = t.J0 - c.J0off, ty = t.J45 - c.J45off, T = Math.hypot(tx, ty);
+    var a_ = c.Pp / 2, b_ = -c.Pm / 2;
+    if (T > a_ + b_ + 1e-9) return { ok: false, error: "CYL_RANGE" };
+    var cands = [];
+    if (T < Math.abs(a_ - b_) + 1e-12 || T < 1e-12) {
+      var du;
+      if (T < 1e-12) du = 2 * cur.alpha * DEG + Math.PI;
+      else { var phi0 = Math.atan2(ty, tx); du = a_ >= b_ ? phi0 : phi0 + Math.PI; }
+      cands.push([du, du + Math.PI]);
+    } else {
+      var phi = Math.atan2(ty, tx);
+      var cg = Math.max(-1, Math.min(1, (a_ * a_ + T * T - b_ * b_) / (2 * a_ * T))), g = Math.acos(cg);
+      [g, -g].forEach(function (s) {
+        var d = phi + s;
+        cands.push([d, Math.atan2(ty - a_ * Math.sin(d), tx - a_ * Math.cos(d))]);
+      });
+    }
+    var best = null;
+    cands.forEach(function (cd) {
+      var a = (cd[0] - Math.PI) / 2 / DEG, b = cd[1] / 2 / DEG;
+      a = cur.alpha + wrap180(a - cur.alpha);
+      b = cur.beta + wrap180(b - cur.beta);
+      var travel = Math.abs(a - cur.alpha) + Math.abs(b - cur.beta);
+      if (!best || travel < best.travel - 1e-9) best = { travel: travel, pos: { delta: delta, alpha: a, beta: b } };
+    });
+    return { ok: true, pos: best.pos };
+  }
+  function vertexRx(rx, dFrom, dTo) { // per principal meridian: F2 = F1 / (1 - d F1)
+    var d = (dFrom - dTo) / 1000, f = function (F) { return F / (1 - d * F); };
+    var s2 = f(rx.S), c2 = f(rx.S + rx.C);
+    return { S: s2, C: c2 - s2, ax: rx.ax };
+  }
+  function composeRefinement(rx, jcc, fog) { // jcc: 0, +1, -1 (minus axis at ax +/- 45); fog: plus sphere (D)
+    var pv = rxToPv(rx);
+    pv.M += fog || 0;
+    if (jcc) {
+      var a = (rx.ax + (jcc > 0 ? 45 : -45)) * DEG;
+      pv.J0 += 0.25 * Math.cos(2 * a);
+      pv.J45 += 0.25 * Math.sin(2 * a);
+    }
+    return pv;
+  }
+  function q(x) { return Math.round(x * 4) / 4; }
+  function fmtRx(rx, round) {
+    var S = round ? q(rx.S) : rx.S, C = round ? q(rx.C) : rx.C;
+    var sg = function (v) { return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2); };
+    if ((round && Math.abs(C) < 0.125) || Math.abs(C) < 0.005) return sg(S) + " DS";
+    var a = Math.round(rx.ax) % 180; if (a === 0) a = 180;
+    return sg(S) + " / " + sg(C) + " × " + a + "°";
+  }
+
+  return { nominal: nominal, wrap180: wrap180, rxToPv: rxToPv, pvToRx: pvToRx, forward: forward, inverse: inverse,
+           vertexRx: vertexRx, composeRefinement: composeRefinement, fmtRx: fmtRx, DEG: DEG };
+})();
+if (typeof module !== "undefined") module.exports = BasiraOptics;
+
+</script>
+<script>
+// Simulated BASIRA device: answers protocol v1 (docs/PROTOCOL.md) like the firmware, so the app runs unchanged
+// with or without hardware. Kinematic model (constant-speed drives, approach from below, sensor noise),
+// not a copy of the firmware's control loop. Extra sim-only message: {"t":"sim_fault","kind":"sensor"|"stall"|"link"}.
+var BasiraSimDevice = (function () {
+  "use strict";
+  var O = (typeof BasiraOptics !== "undefined") ? BasiraOptics : require("./optics.js");
+  var AX = ["plate", "ringP", "ringM"], EYES = ["R", "L"];
+  var SPEED = [6.0, 120, 120];          // mm/s, deg/s, deg/s
+  var TOL = [0.010, 0.3, 0.3], BACKLASH = [0.10, 2.0, 2.0], NOISE = [0.002, 0.05, 0.05];
+  var VERIFY_TOL = [0.030, 0.6, 0.6], VERIFY_MS = 150, MOVE_TIMEOUT_MS = 4000, LINK_TIMEOUT_MS = 1500;
+
+  function SimDevice(opts) {
+    opts = opts || {};
+    this.now = 0;
+    this.onLine = null;                // function(jsonLine)
+    this.cfg = { R: { cal: O.nominal(), fitted: false }, L: { cal: O.nominal(), fitted: false } };
+    this.state = "PARKED"; this.fault = null; this.eye = "R"; this.moveId = 0;
+    this.pos = { R: [0, 45, 45], L: [0, 45, 45] };       // true positions
+    this.target = { R: [0, 45, 45], L: [0, 45, 45] };
+    this.aim = { R: [0, 45, 45], L: [0, 45, 45] };
+    this.conf = { R: false, L: false }; this.occ = { R: false, L: false };
+    this.inject = { sensor: false, stall: false };
+    this.lastLink = 0; this.linkSeen = false; this.lastStatus = 0;
+    this.seed = opts.seed || 12345;
+    this.timer = null;
+  }
+  var P = SimDevice.prototype;
+  P.rand = function () { this.seed = (this.seed * 16807) % 2147483647; return this.seed / 2147483647 * 2 - 1; };
+  P.emit = function (o) { if (this.onLine) this.onLine(JSON.stringify(o)); };
+  P.start = function () {
+    var self = this, last = Date.now();
+    this.emit(this.info());
+    var loop = function () {
+      var t = Date.now(), dt = Math.min(100, t - last); last = t;
+      self.step(dt);
+      self.timer = setTimeout(loop, 10);
+    };
+    this.timer = setTimeout(loop, 10);
+  };
+  P.stop = function () { if (this.timer) clearTimeout(this.timer); this.timer = null; };
+
+  P.info = function () {
+    return { t: "info", fw: "sim-0.1.0", proto: 1, sim: true, allow_nominal: true,
+             eyes: { R: { model: this.cfg.R.cal.model_id, fitted: this.cfg.R.fitted }, L: { model: this.cfg.L.cal.model_id, fitted: this.cfg.L.fitted } } };
+  };
+  P.sensed = function (eye) {
+    var p = this.pos[eye], self = this;
+    return p.map(function (v, j) { return v + self.rand() * NOISE[j]; });
+  };
+  P.status = function () {
+    var self = this, o = { t: "status", st: this.state, eye: this.eye };
+    if (this.state === "FAULT") o.fault = this.fault;
+    EYES.forEach(function (e) {
+      var s = self.sensed(e), ok = [1, 1, 1];
+      if (self.inject.sensor && e === "R") { ok[1] = 0; }
+      var raw = [((s[0] / 5.0 * 180 / Math.PI) % 360 + 360) % 360, (s[1] % 360 + 360) % 360, (s[2] % 360 + 360) % 360];  // nominal mapping, r = 5 mm, zeros 0
+      o[e] = { pos: s.map(function (v) { return +v.toFixed(4); }), raw: raw.map(function (v) { return +v.toFixed(4); }), ok: ok, occ: self.occ[e] ? 1 : 0, conf: self.conf[e] ? 1 : 0 };
+    });
+    return o;
+  };
+  P.err = function (id, code, msg) { this.emit({ t: "err", id: id, code: code, msg: msg }); };
+  P.setState = function (s) { if (s !== this.state) { this.state = s; this.emit(this.status()); } };
+  P.doFault = function (code, axis, msg) {
+    this.state = "FAULT"; this.fault = code; this.conf.R = this.conf.L = false;
+    this.emit({ t: "fault", code: code, axis: axis, msg: msg });
+    this.emit(this.status());
+  };
+  P.busy = function (id) {
+    if (this.state === "FAULT") { this.err(id, "FAULT", "device is in FAULT; send reset first"); return true; }
+    if (this.state === "MOVING" || this.state === "VERIFYING") { this.err(id, "BUSY", "a move is in progress"); return true; }
+    if (this.state === "PARKED") { this.err(id, "NOT_READY", "sensors not read yet"); return true; }
+    return false;
+  };
+  P.startMove = function (id, eye, t) {
+    var cur = this.pos[eye];
+    this.target[eye] = t.slice();
+    this.aim[eye] = t.map(function (v, j) { return v < cur[j] ? v - BACKLASH[j] : v; });   // approach from below
+    this.conf[eye] = false; this.eye = eye; this.moveId = id; this.moveStart = this.now;
+    this.emit({ t: "ack", id: id });
+    this.setState("MOVING");
+  };
+  P.receive = function (line) {
+    var m;
+    try { m = JSON.parse(line); } catch (e) { this.err(0, "BAD_JSON", "could not parse message"); return; }
+    this.linkSeen = true; this.lastLink = this.now;
+    var id = m.id || 0, eye = m.eye;
+    switch (m.t) {
+      case "ping": return;
+      case "hello": this.emit(this.info()); this.emit(this.status()); return;
+      case "status": this.emit(this.status()); return;
+      case "stop": this.emit({ t: "ack", id: id }); this.doFault("USER_STOP", "-", "stopped by the operator"); return;
+      case "reset":
+        if (this.inject.sensor) { this.err(id, "SENSOR", "R.ringP"); return; }
+        this.inject.stall = false; this.fault = null; this.conf.R = this.conf.L = false;
+        this.emit({ t: "ack", id: id }); this.state = "FAULT"; this.setState("READY"); return;
+      case "occlude":
+        if (eye !== "R" && eye !== "L") { this.err(id, "BAD_ARG", "need eye"); return; }
+        this.occ[eye] = !!m.on; this.emit({ t: "ack", id: id }); return;
+      case "set": {
+        if (eye !== "R" && eye !== "L" || typeof m.S !== "number" || typeof m.C !== "number" || typeof m.ax !== "number") { this.err(id, "BAD_ARG", "need eye, S, C, ax"); return; }
+        if (this.busy(id)) return;
+        if (!(m.C <= 0)) { this.err(id, "BAD_RX", "expect minus cylinder: C <= 0"); return; }
+        var p = this.pos[eye], r = O.inverse(O.rxToPv({ S: m.S, C: m.C, ax: m.ax }), this.cfg[eye].cal, { delta: p[0], alpha: p[1], beta: p[2] });
+        if (!r.ok) { this.err(id, r.error === "SPHERE_RANGE" ? "RANGE_SPHERE" : "RANGE_CYL", r.error); return; }
+        this.startMove(id, eye, [r.pos.delta, r.pos.alpha, r.pos.beta]); return;
+      }
+      case "set_pos": {
+        if (this.busy(id)) return;
+        var c = this.pos[eye];
+        this.startMove(id, eye, [m.delta, c[1] + O.wrap180(m.alpha - c[1]), c[2] + O.wrap180(m.beta - c[2])]); return;
+      }
+      case "calib_get": this.emit({ t: "calib", eye: eye || "R", cal: this.cfg[eye || "R"].cal, fitted: this.cfg[eye || "R"].fitted }); return;
+      case "calib_set":
+        if (eye !== "R" && eye !== "L") { this.err(id, "BAD_ARG", "need eye"); return; }
+        var cal = Object.assign({}, this.cfg[eye].cal, m.cal || {});
+        if (!(cal.k > 0.1 && cal.Pp > 0 && cal.Pm < 0)) { this.err(id, "BAD_ARG", "k > 0.1, Pp > 0, Pm < 0"); return; }
+        this.cfg[eye] = { cal: cal, fitted: !!m.fitted }; this.conf[eye] = false;
+        this.emit({ t: "ack", id: id }); this.emit({ t: "calib", eye: eye, cal: cal, fitted: !!m.fitted }); return;
+      case "jog": this.emit({ t: "ack", id: id }); return;
+      case "sim_fault":
+        if (m.kind === "sensor") this.inject.sensor = true;
+        else if (m.kind === "stall") this.inject.stall = true;
+        else if (m.kind === "link") { if (this.state === "MOVING" || this.state === "VERIFYING") this.doFault("LINK", "-", "no message from the app during motion"); else this.doFault("LINK", "-", "app link lost"); }
+        else if (m.kind === "clear") this.inject.sensor = this.inject.stall = false;
+        this.emit({ t: "ack", id: id }); return;
+      default: this.err(id, "UNKNOWN", "unknown message type");
+    }
+  };
+  P.step = function (dt) {
+    this.now += dt;
+    var self = this;
+    if (this.state !== "FAULT" && this.inject.sensor) { this.doFault("SENSOR", "R.ringP", "angle sensor not reading (parity, error flag or magnet)"); return; }
+    if (this.state === "PARKED") this.setState("READY");
+    if (this.state === "MOVING") {
+      if (this.linkSeen && this.now - this.lastLink > LINK_TIMEOUT_MS) { this.doFault("LINK", "-", "no message from the app during motion"); return; }
+      var e = this.eye, p = this.pos[e], aim = this.aim[e], tgt = this.target[e], done = true;
+      for (var j = 0; j < 3; j++) {
+        if (this.inject.stall && j === 1) { done = false; continue; }
+        var d = aim[j] - p[j], stepMax = SPEED[j] * dt / 1000;
+        if (Math.abs(d) <= TOL[j] * 0.5) {
+          if (aim[j] !== tgt[j]) { aim[j] = tgt[j]; done = false; } else p[j] = tgt[j];
+        } else { p[j] += Math.sign(d) * Math.min(stepMax, Math.abs(d)); done = false; }
+      }
+      if (this.inject.stall && this.now - this.moveStart > 300) { this.doFault("STALL", e + ".ringP", "drive is not moving toward its target"); return; }
+      if (done) { this.verifyStart = this.now; this.vsum = [0, 0, 0]; this.vn = 0; this.setState("VERIFYING"); }
+      else if (this.now - this.moveStart > MOVE_TIMEOUT_MS) { this.doFault("TIMEOUT", "-", "move did not finish in time"); return; }
+    } else if (this.state === "VERIFYING") {
+      var s = this.sensed(this.eye);
+      for (var k = 0; k < 3; k++) this.vsum[k] += s[k];
+      this.vn++;
+      if (this.now - this.verifyStart >= VERIFY_MS) {
+        var a = this.vsum.map(function (v) { return v / self.vn; }), t = this.target[this.eye];
+        for (var i = 0; i < 3; i++) if (Math.abs(a[i] - t[i]) > VERIFY_TOL[i]) { this.doFault("TOLERANCE", this.eye + "." + AX[i], "outside tolerance after settling"); return; }
+        var pos = { delta: a[0], alpha: a[1], beta: a[2] }, cfg = this.cfg[this.eye], pv = O.forward(pos, cfg.cal), rx = O.pvToRx(pv);
+        this.conf[this.eye] = true;
+        this.setState("CONFIRMED");
+        this.emit({ t: "confirmed", id: this.moveId, eye: this.eye, pv: [pv.M, pv.J0, pv.J45], rx: [rx.S, rx.C, rx.ax], pos: a, calibrated: cfg.fitted, model: cfg.cal.model_id });
+      }
+    }
+    var period = (this.state === "MOVING" || this.state === "VERIFYING") ? 50 : 500;
+    if (this.now - this.lastStatus >= period) { this.lastStatus = this.now; this.emit(this.status()); }
+  };
+  // simulation only: power actually delivered (used for the simulated patient's view)
+  P.truePower = function (eye) { var p = this.pos[eye]; return O.forward({ delta: p[0], alpha: p[1], beta: p[2] }, this.cfg[eye].cal); };
+  return SimDevice;
+})();
+if (typeof module !== "undefined") module.exports = BasiraSimDevice;
+
+</script>
+<script>
+// Links between the app and a device. All three expose: connect() -> Promise, send(obj), close(),
+// and call onmessage(obj) / onclose(reason). Messages are protocol v1 JSON objects (docs/PROTOCOL.md).
+var BasiraTransports = (function () {
+  "use strict";
+
+  // In-browser simulated device
+  function SimTransport() {
+    this.kind = "sim"; this.dev = null; this.onmessage = null; this.onclose = null;
+  }
+  SimTransport.prototype.connect = function () {
+    var self = this;
+    this.dev = new BasiraSimDevice();
+    this.dev.onLine = function (line) { if (self.onmessage) self.onmessage(JSON.parse(line)); };
+    this.dev.start();
+    return Promise.resolve();
+  };
+  SimTransport.prototype.send = function (obj) { if (this.dev) this.dev.receive(JSON.stringify(obj)); };
+  SimTransport.prototype.close = function () { if (this.dev) this.dev.stop(); this.dev = null; if (this.onclose) this.onclose("closed"); };
+
+  // USB cable: Web Serial (Chrome / Edge on desktop and Android; not Safari / iPad)
+  function SerialTransport(baud) {
+    this.kind = "usb"; this.baud = baud || 460800; this.port = null; this.writer = null; this.reading = false;
+    this.onmessage = null; this.onclose = null;
+  }
+  SerialTransport.supported = function () { return typeof navigator !== "undefined" && "serial" in navigator; };
+  SerialTransport.prototype.connect = async function () {
+    if (!SerialTransport.supported()) throw new Error("هذا المتصفح لا يدعم الاتصال عبر USB (استخدم Chrome أو Edge)");
+    this.port = await navigator.serial.requestPort();
+    await this.port.open({ baudRate: this.baud });
+    this.writer = this.port.writable.getWriter();
+    this.readLoop();
+  };
+  SerialTransport.prototype.readLoop = async function () {
+    var self = this, dec = new TextDecoder(), buf = "";
+    this.reading = true;
+    var reader = this.port.readable.getReader();
+    this.reader = reader;
+    try {
+      for (;;) {
+        var r = await reader.read();
+        if (r.done) break;
+        buf += dec.decode(r.value, { stream: true });
+        var i;
+        while ((i = buf.indexOf("\n")) >= 0) {
+          var line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+          if (line.charAt(0) === "{") { try { self.onmessage && self.onmessage(JSON.parse(line)); } catch (e) { /* not protocol output */ } }
+        }
+      }
+    } catch (e) { /* device unplugged */ }
+    this.reading = false;
+    if (this.onclose) this.onclose("serial closed");
+  };
+  SerialTransport.prototype.send = function (obj) {
+    if (this.writer) this.writer.write(new TextEncoder().encode(JSON.stringify(obj) + "\n"));
+  };
+  SerialTransport.prototype.close = async function () {
+    try { if (this.reader) await this.reader.cancel(); } catch (e) {}
+    try { if (this.writer) this.writer.releaseLock(); } catch (e) {}
+    try { if (this.port) await this.port.close(); } catch (e) {}
+  };
+
+  // Wi-Fi: the device is an access point and serves this app; WebSocket at /ws
+  function WsTransport(url) {
+    this.kind = "wifi"; this.url = url; this.ws = null; this.onmessage = null; this.onclose = null;
+  }
+  WsTransport.defaultUrl = function () {
+    var h = (typeof location !== "undefined" && location.protocol === "http:" && location.host) ? location.host : "192.168.4.1";
+    return "ws://" + h + "/ws";
+  };
+  WsTransport.prototype.connect = function () {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      var ws = new WebSocket(self.url);
+      self.ws = ws;
+      var opened = false;
+      ws.onopen = function () { opened = true; resolve(); };
+      ws.onerror = function () { if (!opened) reject(new Error("تعذّر الاتصال بالجهاز عبر Wi-Fi: " + self.url)); };
+      ws.onmessage = function (ev) { try { self.onmessage && self.onmessage(JSON.parse(ev.data)); } catch (e) {} };
+      ws.onclose = function () { if (opened && self.onclose) self.onclose("wifi closed"); };
+    });
+  };
+  WsTransport.prototype.send = function (obj) { if (this.ws && this.ws.readyState === 1) this.ws.send(JSON.stringify(obj)); };
+  WsTransport.prototype.close = function () { if (this.ws) this.ws.close(); };
+
+  return { SimTransport: SimTransport, SerialTransport: SerialTransport, WsTransport: WsTransport };
+})();
+if (typeof module !== "undefined") module.exports = BasiraTransports;
+
+</script>
+<script>
+// BASIRA clinician app: exam workflow on top of protocol v1. The device owns positions, optics model and
+// confirmation; the app owns the clinical steps (refinement, chart-distance and vertex conversions, exam record).
+(function () {
+  "use strict";
+  var O = BasiraOptics, T = BasiraTransports;
+  var $ = function (id) { return document.getElementById(id); };
+  var EYE_AR = { R: "العين اليمنى", L: "العين اليسرى" };
+  var APP_VERSION = "0.1.0";
+
+  var S = {
+    tr: null, connected: false, info: null, status: null, nextId: 1,
+    eye: "R", req: { R: { S: 0, C: 0, ax: 180 }, L: { S: 0, C: 0, ax: 180 } },
+    applied: { R: null, L: null },       // effective Rx sent for the eye (after refinement)
+    sentId: { R: 0, L: 0 },              // id of the last set command per eye
+    confirmed: { R: null, L: null },     // last confirmed message per eye (valid only if its id = sentId)
+    jcc: 0, fog: 0, saved: { R: null, L: null }, faults: [], log: [],
+    patient: null
+  };
+
+  // ---------------- log ----------------
+  function log(msg, data) {
+    var t = new Date();
+    S.log.push({ time: t.toISOString(), msg: msg, data: data || null });
+    var d = document.createElement("div");
+    d.innerHTML = '<span class="ltr">' + t.toLocaleTimeString("en-GB") + "</span> — " + msg;
+    $("log").prepend(d);
+  }
+
+  // ---------------- link ----------------
+  function send(obj) { if (S.tr && S.connected) { S.tr.send(obj); if ($("verbose").checked && obj.t !== "ping") log("→ " + esc(JSON.stringify(obj))); } }
+  function cmd(obj) { obj.id = S.nextId++; send(obj); return obj.id; }
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+
+  async function connect() {
+    if (S.connected) { disconnect(); return; }
+    var mode = $("mode").value, tr;
+    if (mode === "sim") tr = new T.SimTransport();
+    else if (mode === "usb") tr = new T.SerialTransport(460800);
+    else tr = new T.WsTransport(T.WsTransport.defaultUrl());
+    tr.onmessage = onMessage;
+    tr.onclose = function (why) { if (S.tr === tr) { S.connected = false; log("انقطع الاتصال: " + why); updateUi(); } };
+    try {
+      await tr.connect();
+    } catch (e) { log("تعذّر الاتصال: " + esc(e.message || e)); return; }
+    S.tr = tr; S.connected = true; S.info = null; S.status = null;
+    S.confirmed = { R: null, L: null }; S.applied = { R: null, L: null };
+    log("متصل: " + ({ sim: "محاكاة", usb: "USB", wifi: "Wi-Fi" }[mode]));
+    send({ t: "hello" });
+    updateUi();
+  }
+  function disconnect() {
+    if (S.tr) { var tr = S.tr; S.tr = null; tr.close(); }
+    S.connected = false; S.status = null; log("قُطع الاتصال"); updateUi();
+  }
+  setInterval(function () { if (S.connected) send({ t: "ping" }); }, 500);   // the device stops on silence during motion
+
+  function onMessage(m) {
+    if ($("verbose").checked && m.t !== "status") log("← " + esc(JSON.stringify(m)));
+    switch (m.t) {
+      case "info": S.info = m; log("الجهاز: " + esc(m.fw) + " — البروتوكول " + m.proto); break;
+      case "status": S.status = m; break;
+      case "ack": break;
+      case "err": log("رفض الجهاز الأمر: " + esc(m.code) + " — " + esc(m.msg)); break;
+      case "confirmed":
+        S.confirmed[m.eye] = m;
+        log("تأكيد " + EYE_AR[m.eye] + ": <span class='ltr'>" + O.fmtRx({ S: m.rx[0], C: m.rx[1], ax: m.rx[2] }, false) + "</span>" + (m.calibrated ? "" : " (معايرة اسمية)"));
+        break;
+      case "fault":
+        S.faults.push({ time: new Date().toISOString(), code: m.code, axis: m.axis, msg: m.msg });
+        S.confirmed = { R: null, L: null };
+        log("<b>عطل " + esc(m.code) + "</b> — " + esc(m.axis) + ": " + esc(m.msg));
+        break;
+      case "calib": log("معايرة " + esc(m.eye) + ": " + esc(JSON.stringify(m.cal)) + (m.fitted ? " (مُعايرة)" : " (اسمية)")); break;
+    }
+    updateUi();
+  }
+
+  // ---------------- exam logic ----------------
+  function effectiveRx(eye) {
+    return O.pvToRx(O.composeRefinement(S.req[eye], S.jcc, S.fog));
+  }
+  function apply(why) {
+    if (!S.connected) { log("غير متصل بالجهاز"); return; }
+    var rx = effectiveRx(S.eye);
+    S.applied[S.eye] = { req: Object.assign({}, S.req[S.eye]), jcc: S.jcc, fog: S.fog, rx: rx };
+    S.sentId[S.eye] = cmd({ t: "set", eye: S.eye, S: +rx.S.toFixed(4), C: +rx.C.toFixed(4), ax: +rx.ax.toFixed(3) });
+    log((why || "تطبيق") + " — " + EYE_AR[S.eye] + ": <span class='ltr'>" + O.fmtRx(rx, false) + "</span>");
+    updateUi();
+  }
+  function confirmedFor(eye) {
+    var c = S.confirmed[eye], st = S.status;
+    if (!c || c.id !== S.sentId[eye] || !st || st.st === "FAULT" || !st[eye] || !st[eye].conf) return null;
+    return c;
+  }
+  function results(eye) {
+    var c = confirmedFor(eye);
+    if (!c) return null;
+    var bvd = parseFloat($("bvd").value), L = parseFloat($("dist").value) || 6;
+    var pv = { M: c.pv[0] - 1 / L, J0: c.pv[1], J45: c.pv[2] };     // distance Rx = measured − 1/L
+    var dist = O.pvToRx(pv), out = { device: { S: c.rx[0], C: c.rx[1], ax: c.rx[2] }, distance: dist, model: c.model, calibrated: c.calibrated, pos: c.pos };
+    if (bvd > 0) { out.spectacle12 = O.vertexRx(dist, bvd, 12); out.corneal = O.vertexRx(dist, bvd, 0); }
+    return out;
+  }
+
+  // ---------------- simulated patient ----------------
+  var PATIENTS = {
+    A: { R: { S: -2.25, C: -0.75, ax: 175 }, L: { S: -2.00, C: -0.50, ax: 10 } },
+    B: { R: { S: +1.50, C: -1.25, ax: 90 }, L: { S: +1.75, C: -1.00, ax: 85 } },
+    C: { R: { S: -4.00, C: -2.00, ax: 30 }, L: { S: -3.50, C: -2.50, ax: 150 } }
+  };
+  function q(x) { return Math.round(x * 4) / 4; }
+  function randomEye() { return { S: q(-6 + Math.random() * 9), C: -q(Math.random() * 3), ax: 5 * Math.round(Math.random() * 35) + 5 }; }
+  function setPatient(v) {
+    S.patient = v === "X" ? { R: randomEye(), L: randomEye() } : PATIENTS[v];
+    $("tR").textContent = O.fmtRx(S.patient.R, false); $("tL").textContent = O.fmtRx(S.patient.L, false);
+  }
+  // Residual after the device and the chart vergence; the eye accommodates up to amp (D) to clear excess minus.
+  function patientBlur(eye) {
+    if (!S.tr || S.tr.kind !== "sim" || !S.tr.dev) return null;
+    var dev = S.tr.dev.truePower(eye), need = O.rxToPv(S.patient[eye]), L = parseFloat($("dist").value) || 6;
+    var e = { M: dev.M - 1 / L - need.M, J0: dev.J0 - need.J0, J45: dev.J45 - need.J45 };
+    var J = Math.hypot(e.J0, e.J45), e1 = e.M + J, e2 = e.M - J;           // principal meridional errors
+    var amp = Math.max(0, parseFloat($("amp").value) || 0);
+    var A = Math.min(amp, Math.max(0, -(e1 + e2) / 2));
+    return { r1: e1 + A, r2: e2 + A, ang: Math.atan2(e.J45, e.J0) / 2 / O.DEG };
+  }
+
+  // ---------------- drawing ----------------
+  var SVGNS = "http://www.w3.org/2000/svg", G = {};
+  function el(tag, attrs, parent) { var e = document.createElementNS(SVGNS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function buildDevice() {
+    var s = $("dev"); s.innerHTML = "";
+    el("rect", { x: 0, y: 0, width: 360, height: 330, rx: 14, fill: "#F4F6F5" }, s);
+    G.plate1 = el("rect", { x: 120, y: 60, width: 58, height: 200, rx: 6, fill: "#D3ECE8", stroke: "#0F766E", "stroke-width": 1.5, opacity: .85 }, s);
+    G.plate2 = el("rect", { x: 182, y: 60, width: 58, height: 200, rx: 6, fill: "#D3ECE8", stroke: "#0F766E", "stroke-width": 1.5, opacity: .85 }, s);
+    el("text", { x: 180, y: 300, "text-anchor": "middle", "font-size": 12, fill: "#4B5A63" }, s).textContent = "صفيحتا ألفاريز (الحركة مكبَّرة ×12 في الرسم)";
+    el("circle", { cx: 180, cy: 160, r: 96, fill: "none", stroke: "#13212B", "stroke-width": 10, "stroke-dasharray": "3 4", opacity: .5 }, s);
+    el("circle", { cx: 180, cy: 160, r: 84, fill: "rgba(255,255,255,.35)", stroke: "#13212B", "stroke-width": 2 }, s);
+    G.axB = el("line", { x1: 96, y1: 160, x2: 264, y2: 160, stroke: "#B4410C", "stroke-width": 3, "stroke-dasharray": "8 5" }, s);
+    G.axA = el("line", { x1: 96, y1: 160, x2: 264, y2: 160, stroke: "#0F766E", "stroke-width": 3 }, s);
+    G.axR = el("line", { x1: 80, y1: 160, x2: 280, y2: 160, stroke: "#1D4ED8", "stroke-width": 1.5, "stroke-dasharray": "2 4" }, s);
+    for (var a = 0; a < 180; a += 15) {
+      var c = Math.cos(a * O.DEG), sn = Math.sin(a * O.DEG), r2 = a % 45 === 0 ? 106 : 101;
+      el("line", { x1: 180 + 96 * c, y1: 160 - 96 * sn, x2: 180 + r2 * c, y2: 160 - r2 * sn, stroke: "#4B5A63", "stroke-width": 1.5 }, s);
+      if (a % 45 === 0) el("text", { x: 180 + 118 * c, y: 164 - 118 * sn, "text-anchor": "middle", "font-size": 11, fill: "#4B5A63" }, s).textContent = a + "°";
+    }
+  }
+  function axisLine(line, deg, r) {
+    var c = Math.cos(deg * O.DEG), s = Math.sin(deg * O.DEG);
+    line.setAttribute("x1", 180 - r * c); line.setAttribute("y1", 160 + r * s); line.setAttribute("x2", 180 + r * c); line.setAttribute("y2", 160 - r * s);
+  }
+  function sg(v, d) { return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d === undefined ? 2 : d); }
+  function m180(v) { return (((v % 180) + 180) % 180).toFixed(1) + "°"; }
+
+  function updateUi() {
+    var st = S.status, eye = S.eye, connected = S.connected;
+    var state = connected ? (st ? st.st : "…") : "OFFLINE";
+    $("stateBadge").className = "badge st-" + (connected && st ? st.st : "OFFLINE");
+    $("stateText").textContent = state;
+    $("link").textContent = connected ? ({ sim: "محاكاة", usb: "USB", wifi: "Wi-Fi" }[S.tr.kind]) : "غير متصل";
+    $("link").className = "pill" + (connected ? " on" : "");
+    $("connect").textContent = connected ? "قطع" : "اتصال";
+    $("mode").disabled = connected;
+    var isSim = connected ? S.tr.kind === "sim" : $("mode").value === "sim";
+    ["simFaults", "patientCard", "patientSetup", "demo"].forEach(function (id) { $(id).classList.toggle("hidden", !isSim); });
+    $("realPatientCard").classList.toggle("hidden", isSim);
+    // banners
+    var nominal = S.info && S.info.eyes && (!S.info.eyes.R.fitted || !S.info.eyes.L.fitted);
+    $("calBanner").classList.toggle("show", !!(connected && nominal));
+    var faulted = connected && st && st.st === "FAULT";
+    $("faultBanner").classList.toggle("show", !!faulted);
+    if (faulted) { var f = S.faults[S.faults.length - 1]; $("faultBanner").textContent = "عطل " + st.fault + (f ? " — " + f.axis + ": " + f.msg : "") + ". التصحيح غير معروف. أصلح السبب ثم اضغط «إعادة الضبط»."; }
+    // controls
+    var busy = !connected || !st || st.st === "MOVING" || st.st === "VERIFYING" || st.st === "FAULT" || st.st === "PARKED";
+    $("apply").disabled = busy;
+    ["jcc1", "jcc2", "jccOff", "fog"].forEach(function (id) { $(id).disabled = busy; });
+    $("reset").disabled = !faulted; $("stop").disabled = !connected;
+    $("jcc1").classList.toggle("on", S.jcc === 1); $("jcc2").classList.toggle("on", S.jcc === -1);
+    $("fog").classList.toggle("on", S.fog > 0);
+    var other = eye === "R" ? "L" : "R";
+    $("occ").classList.toggle("on", !!(st && st[other] && st[other].occ));
+    // requested values
+    var r = S.req[eye];
+    $("vS").textContent = sg(r.S); $("vC").textContent = sg(r.C); $("vA").textContent = Math.abs(r.C) < 0.01 ? "—" : (r.ax || 180) + "°";
+    var a = S.applied[eye];
+    var dirty = !a || a.req.S !== r.S || a.req.C !== r.C || a.req.ax !== r.ax || a.jcc !== S.jcc || a.fog !== S.fog;
+    $("dirty").textContent = connected && dirty ? "تغييرات لم تُطبَّق بعد — اضغط «تطبيق الإعداد»." : "";
+    $("devEye").textContent = EYE_AR[eye]; $("resEye").textContent = EYE_AR[eye];
+    // device view
+    if (st && st[eye]) {
+      var p = st[eye].pos, ok = st[eye].ok;
+      G.plate1.setAttribute("y", 60 - p[0] * 12); G.plate2.setAttribute("y", 60 + p[0] * 12);
+      axisLine(G.axA, p[1], 84); axisLine(G.axB, p[2], 84);
+      var cal = O.nominal(), rd = O.pvToRx(O.forward({ delta: p[0], alpha: p[1], beta: p[2] }, cal));
+      if (Math.abs(rd.C) > 0.06) { G.axR.style.display = ""; axisLine(G.axR, rd.ax, 100); } else G.axR.style.display = "none";
+      $("kD").textContent = sg(p[0], 3) + " mm"; $("kAl").textContent = m180(p[1]); $("kBe").textContent = m180(p[2]);
+      $("kSens").textContent = ok.every(function (v) { return v; }) ? "OK" : "FAULT: " + ["plate", "ring+", "ring−"].filter(function (_, i) { return !ok[i]; }).join(", ");
+      $("kOcc").textContent = (st.R.occ ? "closed" : "open") + " / " + (st.L.occ ? "closed" : "open");
+    } else ["kD", "kAl", "kBe", "kSens", "kOcc"].forEach(function (id) { $(id).textContent = "—"; });
+    $("kModel").textContent = S.info && S.info.eyes ? S.info.eyes[eye].model + (S.info.eyes[eye].fitted ? " (fitted)" : " (nominal)") : "—";
+    $("kFw").textContent = S.info ? S.info.fw : "—";
+    // results
+    $("rReq").textContent = a ? O.fmtRx(a.rx, false) : "—";
+    var res = results(eye);
+    var pending = connected && st && (st.st === "MOVING" || st.st === "VERIFYING") && st.eye === eye;
+    var unknown = connected && st && st.st === "FAULT";
+    var blank = unknown ? "غير معروف" : pending ? "قيد التأكيد…" : "—";
+    $("rConf").textContent = res ? O.fmtRx(res.device, false) + " @ " + ($("bvd").value || "?") + " mm" : blank;
+    $("rDist").textContent = res ? O.fmtRx(res.distance, false) : blank;
+    $("rSpec").textContent = res ? (res.spectacle12 ? O.fmtRx(res.spectacle12, true) : "أدخل مسافة القمة") : blank;
+    $("rCorn").textContent = res ? (res.corneal ? O.fmtRx(res.corneal, false) : "أدخل مسافة القمة") : blank;
+    // simulated patient view
+    var b = patientBlur(eye);
+    if (b) {
+      var kpx = 7.5, sx = Math.min(22, Math.abs(b.r1) * kpx), sy = Math.min(22, Math.abs(b.r2) * kpx);
+      $("gb").setAttribute("stdDeviation", sx.toFixed(2) + " " + sy.toFixed(2));
+      $("rot").setAttribute("transform", "rotate(" + (-b.ang) + " 300 150)"); $("unrot").setAttribute("transform", "rotate(" + b.ang + " 300 150)");
+      $("kBlur").textContent = Math.sqrt((b.r1 * b.r1 + b.r2 * b.r2) / 2).toFixed(2) + " D";
+      var occThis = st && st[eye] && st[eye].occ;
+      $("chartTag").textContent = "لوحة القراءة على " + ($("dist").value || 6) + " م — " + EYE_AR[eye] + (occThis ? " (هذه العين محجوبة!)" : "") + (S.jcc ? " — متقاطعة " + (S.jcc > 0 ? 1 : 2) : "") + (S.fog ? " — ضباب" : "");
+      $("ampTxt").textContent = (parseFloat($("amp").value) || 0).toFixed(2) + " D";
+    }
+  }
+
+  // ---------------- UI wiring ----------------
+  document.querySelectorAll("button.sm").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var kv = b.dataset.d.split(","), k = kv[0], v = +kv[1], r = S.req[S.eye];
+      if (k === "S") r.S = Math.max(-12, Math.min(12, +(r.S + v).toFixed(2)));
+      if (k === "C") r.C = Math.max(-6, Math.min(0, +(r.C + v).toFixed(2)));
+      if (k === "A") r.ax = ((r.ax + v - 1) % 180 + 180) % 180 + 1;
+      updateUi();
+    });
+  });
+  $("connect").addEventListener("click", connect);
+  $("mode").addEventListener("change", updateUi);
+  $("apply").addEventListener("click", function () { S.jcc = 0; apply("تطبيق الإعداد"); });
+  function selectEye(e) {
+    S.eye = e; S.jcc = 0; S.fog = 0;
+    $("eyeR").setAttribute("aria-pressed", e === "R"); $("eyeL").setAttribute("aria-pressed", e === "L");
+    log("اختيار " + EYE_AR[e]); updateUi();
+  }
+  $("eyeR").addEventListener("click", function () { selectEye("R"); });
+  $("eyeL").addEventListener("click", function () { selectEye("L"); });
+  function jcc(v) {
+    if (Math.abs(S.req[S.eye].C) < 0.01) { log("الأسطوانة المتقاطعة تحتاج محورًا: أضف أسطوانة أولًا."); return; }
+    S.jcc = v; apply(v ? "أسطوانة متقاطعة — وضع " + (v > 0 ? 1 : 2) : "إلغاء الأسطوانة المتقاطعة");
+  }
+  $("jcc1").addEventListener("click", function () { jcc(1); });
+  $("jcc2").addEventListener("click", function () { jcc(-1); });
+  $("jccOff").addEventListener("click", function () { jcc(0); });
+  $("fog").addEventListener("click", function () { S.fog = S.fog ? 0 : 1; apply(S.fog ? "ضباب +1.00" : "إزالة الضباب"); });
+  $("occ").addEventListener("click", function () {
+    var other = S.eye === "R" ? "L" : "R", on = !(S.status && S.status[other] && S.status[other].occ);
+    cmd({ t: "occlude", eye: other, on: on }); log((on ? "حجب " : "فتح ") + EYE_AR[other]);
+  });
+  $("stop").addEventListener("click", function () { send({ t: "stop", id: S.nextId++ }); log("إيقاف فوري"); });
+  $("reset").addEventListener("click", function () { cmd({ t: "reset" }); log("طلب إعادة الضبط"); });
+  $("fSensor").addEventListener("click", function () { cmd({ t: "sim_fault", kind: "sensor" }); });
+  $("fStall").addEventListener("click", function () { cmd({ t: "sim_fault", kind: "stall" }); });
+  $("fLink").addEventListener("click", function () { cmd({ t: "sim_fault", kind: "link" }); });
+  $("fClear").addEventListener("click", function () { cmd({ t: "sim_fault", kind: "clear" }); });
+  $("save").addEventListener("click", function () {
+    var bvd = parseFloat($("bvd").value), pd = parseFloat($("pd").value);
+    if (!(bvd >= 8 && bvd <= 20) || !(pd >= 40 && pd <= 80)) { $("saved").textContent = "أدخل مسافة القمة (8–20 mm) و PD (40–80 mm) قبل الحفظ."; return; }
+    if (S.jcc || S.fog) { $("saved").textContent = "ألغِ الأسطوانة المتقاطعة والضباب ثم طبّق الوصفة النهائية قبل الحفظ."; return; }
+    var res = results(S.eye);
+    if (!res) { $("saved").textContent = "لا يمكن الحفظ: يجب أن يؤكّد الجهاز الوصفة الحالية (CONFIRMED)."; return; }
+    S.saved[S.eye] = { time: new Date().toISOString(), requested: S.applied[S.eye].rx, result: res };
+    $("saved").innerHTML = "محفوظ — اليمنى: <span class='ltr'>" + (S.saved.R ? O.fmtRx(S.saved.R.result.spectacle12, true) : "—") + "</span> | اليسرى: <span class='ltr'>" + (S.saved.L ? O.fmtRx(S.saved.L.result.spectacle12, true) : "—") + "</span>";
+    log("حفظ نتيجة " + EYE_AR[S.eye]);
+  });
+  $("download").addEventListener("click", function () {
+    var rec = {
+      record: "BASIRA exam", app_version: APP_VERSION, protocol: 1, created: new Date().toISOString(),
+      link: S.tr ? S.tr.kind : null, device: S.info,
+      exam: { bvd_mm: parseFloat($("bvd").value) || null, pd_mm: parseFloat($("pd").value) || null, chart_m: parseFloat($("dist").value) || null,
+              complete: !!(S.saved.R && S.saved.L), eyes: S.saved },
+      faults: S.faults, log: S.log
+    };
+    var blob = new Blob([JSON.stringify(rec, null, 1)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "BASIRA_exam_" + rec.created.replace(/[:.]/g, "-") + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    log("تنزيل سجل الفحص" + (rec.exam.complete ? "" : " (غير مكتمل)"));
+  });
+  $("sendRaw").addEventListener("click", function () {
+    try { var o = JSON.parse($("raw").value); if (!o.id && o.t !== "ping") o.id = S.nextId++; send(o); log("أُرسلت: <span class='ltr'>" + esc(JSON.stringify(o)) + "</span>"); }
+    catch (e) { log("رسالة غير صالحة: " + esc(e.message)); }
+  });
+  $("patient").addEventListener("change", function (e) { setPatient(e.target.value); log("مريض افتراضي جديد"); updateUi(); });
+  $("reveal").addEventListener("click", function () { $("truth").classList.toggle("hidden"); });
+  ["bvd", "pd", "dist", "amp"].forEach(function (id) { $(id).addEventListener("input", updateUi); });
+
+  // ---------------- guided demo (simulation only) ----------------
+  var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  async function waitIdle() { for (var i = 0; i < 200; i++) { var s = S.status && S.status.st; if (s === "CONFIRMED" || s === "FAULT" || s === "READY") { if (i > 2) return; } await sleep(50); } }
+  async function demo() {
+    if (!S.connected) { $("mode").value = "sim"; await connect(); }
+    if (S.tr.kind !== "sim") return;
+    $("demo").disabled = true;
+    if (S.status && S.status.st === "FAULT") { cmd({ t: "reset" }); await sleep(300); }
+    $("patient").value = "A"; setPatient("A"); selectEye("R");
+    $("bvd").value = 13; $("pd").value = 63; updateUi();
+    var r = S.req.R; r.S = 0; r.C = 0; r.ax = 180;
+    if (!(S.status && S.status.L && S.status.L.occ)) $("occ").click();
+    await sleep(800);
+    var steps = [-1.0, -2.0, -2.25];
+    for (var i = 0; i < steps.length; i++) { r.S = steps[i]; apply("تعديل الكروي"); await waitIdle(); await sleep(900); }
+    r.C = -0.5; apply("إضافة أسطوانة"); await waitIdle(); await sleep(900);
+    jcc(1); await waitIdle(); await sleep(1000); jcc(-1); await waitIdle(); await sleep(1000);
+    r.ax = 175; jcc(0); await waitIdle(); await sleep(800);
+    r.C = -0.75; apply("تحسين الأسطوانة"); await waitIdle(); await sleep(1000);
+    r.S = -2.00; apply("أقصى موجب بأفضل حدة (اللوحة على 6 م)"); await waitIdle(); await sleep(1000);
+    $("save").click(); await sleep(800);
+    log("انتهت الجولة.");
+    $("demo").disabled = false;
+  }
+  $("demo").addEventListener("click", demo);
+
+  buildDevice(); setPatient("A"); updateUi();
+  setInterval(updateUi, 100);
+  if (typeof window !== "undefined") window.BASIRA_APP = S;   // for tests and recording
+})();
+
+</script>
+</body>
+</html>
