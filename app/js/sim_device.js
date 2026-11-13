@@ -65,8 +65,12 @@ var BasiraSimDevice = (function () {
     this.emit({ t: "fault", code: code, axis: axis, msg: msg });
     this.emit(this.status());
   };
-  P.busy = function (id) {
+  P.rejectFault = function (id) {
     if (this.state === "FAULT") { this.err(id, "FAULT", "device is in FAULT; send reset first"); return true; }
+    return false;
+  };
+  P.busy = function (id) {
+    if (this.rejectFault(id)) return true;
     if (this.state === "MOVING" || this.state === "VERIFYING") { this.err(id, "BUSY", "a move is in progress"); return true; }
     if (this.state === "PARKED") { this.err(id, "NOT_READY", "sensors not read yet"); return true; }
     return false;
@@ -95,6 +99,7 @@ var BasiraSimDevice = (function () {
         this.emit({ t: "ack", id: id }); this.state = "FAULT"; this.setState("READY"); return;
       case "occlude":
         if (eye !== "R" && eye !== "L") { this.err(id, "BAD_ARG", "need eye"); return; }
+        if (this.rejectFault(id)) return;
         this.occ[eye] = !!m.on; this.emit({ t: "ack", id: id }); return;
       case "set": {
         if (eye !== "R" && eye !== "L" || typeof m.S !== "number" || typeof m.C !== "number" || typeof m.ax !== "number") { this.err(id, "BAD_ARG", "need eye, S, C, ax"); return; }
@@ -116,7 +121,9 @@ var BasiraSimDevice = (function () {
         if (!(cal.k > 0.1 && cal.Pp > 0 && cal.Pm < 0)) { this.err(id, "BAD_ARG", "k > 0.1, Pp > 0, Pm < 0"); return; }
         this.cfg[eye] = { cal: cal, fitted: !!m.fitted }; this.conf[eye] = false;
         this.emit({ t: "ack", id: id }); this.emit({ t: "calib", eye: eye, cal: cal, fitted: !!m.fitted }); return;
-      case "jog": this.emit({ t: "ack", id: id }); return;
+      case "jog":
+        if (this.busy(id)) return;
+        this.emit({ t: "ack", id: id }); return;
       case "sim_fault":
         if (m.kind === "sensor") this.inject.sensor = true;
         else if (m.kind === "stall") this.inject.stall = true;

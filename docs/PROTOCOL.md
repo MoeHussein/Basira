@@ -26,10 +26,10 @@ Conventions:
 | `status` | | Device replies with `status`. |
 | `set` | `id, eye, S, C, ax` | Device computes element positions with its calibration model, moves, verifies, then sends `confirmed`. Accepted only in `READY` or `CONFIRMED`. |
 | `set_pos` | `id, eye, delta, alpha, beta` | Moves to positions directly; for calibration capture. |
-| `occlude` | `id, eye, on` | Closes (`true`) or opens the occluder of that eye. |
-| `stop` | `id` | Brakes all motors immediately and enters `FAULT` (`USER_STOP`). |
+| `occlude` | `id, eye, on` | Closes (`true`) or opens the occluder of that eye. Refused in `FAULT`. |
+| `stop` | `id` | Commands the six lens drives to brake, cancels any active jog and enters `FAULT` (`USER_STOP`). The occluders retain their last commanded positions. |
 | `reset` | `id` | Leaves `FAULT` once every sensor gives a fresh good read and the motor drivers report no fault. The correction is then unknown until the next `set`. |
-| `jog` | `id, axis (0-5), duty (-1..1), ms (<= 2000)` | Open-loop drive, for bring-up only. Axis order: R plate, R ring+, R ring-, L plate, L ring+, L ring-. |
+| `jog` | `id, axis (0-5), duty (-1..1), ms (<= 2000)` | Open-loop drive for bring-up. Accepted in `READY` or `CONFIRMED` with no active jog. Axis order: R plate, R ring+, R ring-, L plate, L ring+, L ring-. |
 | `calib_get` | `eye` (optional) | Device replies with `calib` for one eye or both. |
 | `calib_set` | `id, eye, cal{P0,k,Pp,Pm,J0off,J45off,delta_max,model_id}, mech{zero_deg[3],sign[3],motor_dir[3],dmin[3],pinion_r_mm}, fitted` | Applies the values and saves them to flash. Missing fields keep their current values. |
 | `sim_fault` | `id, kind: sensor, stall, link or clear` | Simulated device only: injects a fault. |
@@ -43,7 +43,7 @@ Conventions:
 | `ack` | `id` | A command was accepted. |
 | `err` | `id, code, msg` | A command was refused; nothing moved. |
 | `confirmed` | `id, eye, pv[3], rx[3], pos[3], calibrated, model` | After verification. The power is computed from the averaged **sensed** positions, not from the command. |
-| `fault` | `code, axis, msg` | A fault stopped all motion. Both eyes' corrections become unknown. |
+| `fault` | `code, axis, msg` | A fault commanded the lens drives to brake. Both eyes' corrections become unknown. |
 | `calib` | `eye, cal{...}, mech{...}, fitted` | Reply to `calib_get` and `calib_set`. |
 
 **States.** The device starts in `PARKED` until every sensor has given a reading, then moves through `READY`, `MOVING`, `VERIFYING` and `CONFIRMED`. Any fault puts it in `FAULT`.

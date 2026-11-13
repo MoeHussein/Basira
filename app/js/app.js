@@ -174,6 +174,7 @@
     var busy = !connected || !st || st.st === "MOVING" || st.st === "VERIFYING" || st.st === "FAULT" || st.st === "PARKED";
     $("apply").disabled = busy;
     ["jcc1", "jcc2", "jccOff", "fog"].forEach(function (id) { $(id).disabled = busy; });
+    $("occ").disabled = !connected || !st || faulted;
     $("reset").disabled = !faulted; $("stop").disabled = !connected;
     $("jcc1").classList.toggle("on", S.jcc === 1); $("jcc2").classList.toggle("on", S.jcc === -1);
     $("fog").classList.toggle("on", S.fog > 0);

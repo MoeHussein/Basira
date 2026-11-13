@@ -90,11 +90,10 @@ void Device::fault(Fault f, int axis, const char* msg) {
 void Device::tick(uint32_t now) {
   now_ = now;
   for (int i = 0; i < 6; i++) ax_[i].sample();
-  if (state_ != State::FAULT) {
-    for (int i = 0; i < 6; i++)
-      if (!ax_[i].sensorOk()) { fault(Fault::SENSOR, i, "angle sensor not reading (parity, error flag or magnet)"); return; }
-    if (board_ && board_->driverFault()) { fault(Fault::DRIVER, -1, "motor driver reports a fault (over-current or over-temperature)"); return; }
-  }
+  if (state_ == State::FAULT) return;
+  for (int i = 0; i < 6; i++)
+    if (!ax_[i].sensorOk()) { fault(Fault::SENSOR, i, "angle sensor not reading (parity, error flag or magnet)"); return; }
+  if (board_ && board_->driverFault()) { fault(Fault::DRIVER, -1, "motor driver reports a fault (over-current or over-temperature)"); return; }
   // bring-up jog runs open loop, outside the state machine
   if (jogAxis_ >= 0) {
     if ((int32_t)(now - jogUntil_) >= 0) { motors_[jogAxis_]->drive(0); jogAxis_ = -1; }
@@ -173,15 +172,24 @@ bool Device::startMove(int id, int eye, const Pos& p) {
   return true;
 }
 
-static bool busyOrNot(State s, IListener* L, int id) {
+static bool rejectFault(State s, IListener* L, int id) {
   if (s == State::FAULT) { if (L) L->onError(id, "FAULT", "device is in FAULT; send reset first"); return true; }
-  if (s == State::MOVING || s == State::VERIFYING) { if (L) L->onError(id, "BUSY", "a move is in progress"); return true; }
+  return false;
+}
+
+static bool rejectBusy(State s, bool jogging, IListener* L, int id) {
+  if (s == State::MOVING || s == State::VERIFYING || jogging) { if (L) L->onError(id, "BUSY", "a move is in progress"); return true; }
+  return false;
+}
+
+static bool busyOrNot(State s, bool jogging, IListener* L, int id) {
+  if (rejectFault(s, L, id) || rejectBusy(s, jogging, L, id)) return true;
   if (s == State::PARKED) { if (L) L->onError(id, "NOT_READY", "sensors not read yet"); return true; }
   return false;
 }
 
 void Device::cmdSetRx(int id, int eye, const Rx& rx) {
-  if (busyOrNot(state_, L_, id)) return;
+  if (busyOrNot(state_, jogAxis_ >= 0, L_, id)) return;
   if (!cfg_[eye].fitted && !BASIRA_ALLOW_NOMINAL_CALIB) { if (L_) L_->onError(id, "UNCALIBRATED", "no valid calibration for this eye"); return; }
   if (!(rx.C <= 0.0) || isnan(rx.S) || isnan(rx.ax)) { if (L_) L_->onError(id, "BAD_RX", "expect minus cylinder: C <= 0"); return; }
   Pos out;
@@ -192,7 +200,7 @@ void Device::cmdSetRx(int id, int eye, const Rx& rx) {
 }
 
 void Device::cmdSetPos(int id, int eye, const Pos& p) {
-  if (busyOrNot(state_, L_, id)) return;
+  if (busyOrNot(state_, jogAxis_ >= 0, L_, id)) return;
   Pos cur = pos(eye), q = p;
   q.alpha = cur.alpha + wrap180(q.alpha - cur.alpha);   // nearest equivalent ring angle
   q.beta = cur.beta + wrap180(q.beta - cur.beta);
@@ -200,6 +208,7 @@ void Device::cmdSetPos(int id, int eye, const Pos& p) {
 }
 
 void Device::cmdOcclude(int id, int eye, bool closed) {
+  if (rejectFault(state_, L_, id)) return;
   occl_[eye] = closed;
   if (board_) board_->servo(eye, closed);
   if (L_) L_->onAck(id);
@@ -226,6 +235,7 @@ void Device::cmdReset(int id) {
   }
   if (board_ && board_->driverFault()) { if (L_) L_->onError(id, "DRIVER", "motor driver still reports a fault"); return; }
   for (int i = 0; i < 6; i++) ax_[i].stop();
+  jogAxis_ = -1;
   fault_ = Fault::NONE;
   confirmed_[R] = confirmed_[L] = false;
   if (L_) L_->onAck(id);
@@ -234,8 +244,8 @@ void Device::cmdReset(int id) {
 }
 
 void Device::cmdJog(int id, int axis, float duty, uint16_t ms) {
-  if (axis < 0 || axis > 5 || fabs(duty) > 1.0f || ms > 2000) { if (L_) L_->onError(id, "BAD_ARG", "axis 0..5, |duty| <= 1, ms <= 2000"); return; }
-  if (state_ == State::MOVING || state_ == State::VERIFYING) { if (L_) L_->onError(id, "BUSY", "a move is in progress"); return; }
+  if (busyOrNot(state_, jogAxis_ >= 0, L_, id)) return;
+  if (axis < 0 || axis > 5 || !(fabs(duty) <= 1.0f) || ms > 2000) { if (L_) L_->onError(id, "BAD_ARG", "axis 0..5, |duty| <= 1, ms <= 2000"); return; }
   confirmed_[axis / 3] = false;
   if (state_ == State::CONFIRMED) setState(State::READY);
   jogAxis_ = axis; jogDuty_ = duty; jogUntil_ = now_ + ms;
@@ -243,7 +253,7 @@ void Device::cmdJog(int id, int axis, float duty, uint16_t ms) {
 }
 
 void Device::cmdSetConfig(int id, int eye, const EyeConfig& c) {
-  if (state_ == State::MOVING || state_ == State::VERIFYING) { if (L_) L_->onError(id, "BUSY", "a move is in progress"); return; }
+  if (rejectBusy(state_, jogAxis_ >= 0, L_, id)) return;
   if (!(c.cal.k > 0.1) || !(c.cal.Pp > 0) || !(c.cal.Pm < 0) || !(c.pinion_r_mm > 0)) { if (L_) L_->onError(id, "BAD_ARG", "k > 0.1, Pp > 0, Pm < 0, pinion_r_mm > 0"); return; }
   cfg_[eye] = c;
   applyConfig(eye);

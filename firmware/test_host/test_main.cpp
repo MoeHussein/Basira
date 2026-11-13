@@ -249,6 +249,25 @@ static void test_faults() {
     r.send("{\"t\":\"stop\",\"id\":2}");
     CHECK(r.dev.state() == State::FAULT && r.dev.fault() == Fault::USER_STOP, "stop");
     for (auto& d : r.drv) CHECK(d.duty == 0, "motors braked after stop");
+    const double stopped = r.drv[1].shaft;
+    r.send(R"({"t":"jog","id":3,"axis":1,"duty":0.5,"ms":100})");
+    CHECK(r.out.last("err").find(R"("id":3,"code":"FAULT")") != std::string::npos, "jog refused after STOP");
+    r.run(100);
+    CHECK(r.drv[1].shaft == stopped && r.drv[1].duty == 0, "shaft stays still after refused jog");
+    r.send(R"({"t":"occlude","id":4,"eye":"R","on":true})");
+    CHECK(r.out.last("err").find(R"("id":4,"code":"FAULT")") != std::string::npos, "occluder refused after STOP");
+    CHECK(!r.board.servo_[0] && !r.dev.occluded(Device::R), "occluder stays in place after refused command");
+    r.send(R"({"t":"reset","id":5})");
+    r.send(R"({"t":"occlude","id":6,"eye":"R","on":true})");
+    CHECK(r.board.servo_[0] && r.dev.occluded(Device::R), "occluder can operate after reset");
+    r.send(R"({"t":"jog","id":7,"axis":1,"duty":0.5,"ms":100})");
+    r.run(10);
+    CHECK(r.drv[1].shaft > stopped && r.drv[1].duty > 0, "jog can operate after reset");
+    r.send(R"({"t":"jog","id":8,"axis":2,"duty":0.5,"ms":100})");
+    CHECK(r.out.last("err").find(R"("id":8,"code":"BUSY")") != std::string::npos, "second jog refused during an active jog");
+    r.send(R"({"t":"stop","id":9})");
+    r.run(110);
+    for (auto& d : r.drv) CHECK(d.duty == 0, "STOP cancels an active jog");
   }
   { // something pushes a ring after confirmation -> DRIFT
     Rig r; r.run(10);
