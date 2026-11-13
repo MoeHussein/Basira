@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+firmware/test_host/test_host
+calibration/out/
+validation/out/
+node_modules/
+.DS_Store
