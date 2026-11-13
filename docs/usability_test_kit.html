@@ -2,109 +2,267 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<title>BASIRA — حقيبة اختبار الاستخدام مع أخصائيي البصريات</title>
+<title>BASIRA-UT-PRO-001 بروتوكول اختبار قابلية الاستخدام</title>
 <style>
-@page{size:A4;margin:16mm 15mm}
-body{font-family:Plex,"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;color:#13212B;font-size:11.5pt;line-height:1.55;margin:0}
-h1{font-size:19pt;margin:0 0 2mm;color:#0B5752}
-h2{font-size:13.5pt;margin:7mm 0 2mm;color:#0B5752;border-bottom:1.5px solid #0F766E;padding-bottom:1mm}
-h3{font-size:11.5pt;margin:4mm 0 1mm}
-.sub{color:#4B5A63;font-size:10.5pt}
+@page{size:A4;margin:24mm 20mm 20mm 20mm}
+html{font-family:Amiri,"Times New Roman",serif;font-size:12pt;color:#111;line-height:1.6}
+body{margin:0}
 .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
-table{width:100%;border-collapse:collapse;margin:2mm 0;font-size:10.5pt}
-th,td{border:1px solid #B9C6C3;padding:1.6mm 2mm;vertical-align:top;text-align:right}
-th{background:#E3F1EE}
-.box{border:1px solid #B9C6C3;border-radius:2mm;padding:2.5mm 3.5mm;margin:2mm 0;background:#F6FAF9}
-.warn{background:#FFF6DC;border-color:#E8C66A}
-.page{page-break-before:always}
-.sus td,.sus th{text-align:left}
-.sus td.n{width:7mm;text-align:center}
-.sus td.c{width:9mm;text-align:center}
-.en{direction:ltr;text-align:left;font-family:"Segoe UI",Arial,sans-serif}
-.lines{border-bottom:1px solid #B9C6C3;height:8mm}
-.small{font-size:9.5pt;color:#4B5A63}
-ol li,ul li{margin:.6mm 0}
+p{margin:0 0 2.2mm;text-align:justify}
+h1{font-size:19pt;font-weight:700;margin:0;line-height:1.3}
+h2{font-size:13.5pt;font-weight:700;margin:6mm 0 1.6mm;page-break-after:avoid}
+h3{font-size:12pt;font-weight:700;margin:3.5mm 0 1mm;page-break-after:avoid}
+table{width:100%;border-collapse:collapse;margin:1.5mm 0 3mm;font-size:11pt;page-break-inside:auto}
+tr{page-break-inside:avoid}
+th,td{border:.6pt solid #222;padding:1.2mm 2mm;vertical-align:top;text-align:right}
+th{background:#ececec;font-weight:700}
+td.c,th.c{text-align:center}
+ol,ul{margin:0 0 2.5mm;padding-inline-start:7mm}
+li{margin:.6mm 0}
+.cover-top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.4pt solid #111;padding-bottom:2.5mm;margin-bottom:4mm}
+.cover-top img{height:17mm}
+.docno{font-size:10.5pt;text-align:left;direction:ltr;line-height:1.5}
+.subtitle{font-size:13pt;margin-top:1mm}
+.kv td{padding:.8mm 2mm}
+.kv td:first-child{width:38mm;background:#f6f6f6;font-weight:700}
+.sig td{height:7mm}
+.toc td{border:none;border-bottom:.4pt dotted #777;padding:.5mm 1mm}
+.toc td.n{width:9mm;font-weight:700}
+.note{font-size:10.5pt;border-top:.6pt solid #222;border-bottom:.6pt solid #222;padding:1.5mm 0;margin:2mm 0}
+.pb{page-break-before:always}
+.form-title{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1.2pt solid #111;padding-bottom:1.5mm;margin-bottom:3mm}
+.form-title h2{margin:0}
+.form-title .code{direction:ltr;font-size:10.5pt}
+.field{display:inline-block;min-width:38mm;border-bottom:.6pt solid #222;margin:0 1mm}
+.line{border-bottom:.6pt solid #222;height:8mm}
+.en{direction:ltr;text-align:left}
+.en th,.en td{text-align:left}
+.en td.c,.en th.c{text-align:center}
+.box{display:inline-block;width:3.6mm;height:3.6mm;border:.6pt solid #222;vertical-align:middle}
+.small{font-size:10pt}
 </style>
 </head>
 <body>
-<h1>بصيرة BASIRA — حقيبة اختبار الاستخدام</h1>
-<div class="sub">تقييم تطبيق الأخصائي (النموذج الأولي الرقمي) مع أخصائيي البصريات · فريق <span class="ltr">MED-VF7H45</span> · تقودها: أسماء السباعي · التحليل: منى بايزيد</div>
 
-<h2>1. الهدف والنطاق</h2>
-<ul>
-  <li><b>نسأل:</b> هل يستطيع أخصائي البصريات إجراء فحص انكسار كامل بالتطبيق دون مساعدة؟ وأين يتعثّر؟ وكم يقيّم سهولة الاستخدام (مقياس SUS)؟</li>
-  <li><b>المريض افتراضي داخل المحاكاة.</b> لا يُفحص أي شخص، ولا تُجمع بيانات صحية، ولا يُلبس أي جهاز.</li>
-  <li><b>المشاركون:</b> 5 أخصائيين أو متدرّبي امتياز في البصريات، وتكفي 5 جلسات لكشف أغلب مشكلات الاستخدام الكبيرة. مدة الجلسة نحو 20 دقيقة.</li>
-  <li><b>البيانات:</b> مجهولة الهوية، ويُرمز للمشارك <span class="ltr">P1…P5</span>. يُسجَّل الدور وسنوات الخبرة فقط.</li>
-</ul>
-<div class="box warn">تأكّدي من متطلبات جامعة جدة: بعض الجهات تشترط موافقة لجنة الأخلاقيات حتى لمقابلات الاستخدام. إن لم تُشترط، يكفي الإذن الشفهي في نص الافتتاح أدناه.</div>
+<!-- ======================= control page ======================= -->
+<div class="cover-top">
+  <div>
+    <h1>بروتوكول اختبار قابلية الاستخدام</h1>
+    <div class="subtitle">تطبيق الأخصائي لنظام بصيرة — النموذج الأولي الرقمي</div>
+  </div>
+  <div style="text-align:left">
+    <img src="assets/basira_logo_ink.png" alt="BASIRA"><br>
+    <div class="docno">BASIRA-UT-PRO-001 · Rev. 1.0</div>
+  </div>
+</div>
 
-<h2>2. التجهيز</h2>
-<ul>
-  <li><b>جهاز وتطبيق:</b> حاسوب محمول أو جهاز لوحي يفتح الملف <span class="ltr">dist/BASIRA_app.html</span> من حزمة الكود (يعمل دون إنترنت). افتحيه واختاري «محاكاة» ثم «اتصال».</li>
-  <li><b>للمراقبة:</b> ساعة توقيت، ونسخة من ورقة الملاحظة (القسم 5) لكل مشارك.</li>
-  <li><b>إخفاء الوصفة:</b> اختاري المريض «حالة ب» ولا تضغطي «إظهار الوصفة الحقيقية» أمام المشارك. الحقيقة للمراقب فقط: العين اليمنى <span class="ltr">+1.50 / −1.25 × 90</span> (عند الجهاز).</li>
-  <li><b>القيم المسموح إخبار المشارك بها:</b> بُعد اللوحة 6 م، ومسافة القمة 13 مم، وPD 63 مم.</li>
-</ul>
-
-<h2>3. نص الافتتاح (يُقرأ للمشارك)</h2>
-<div class="box">«شكرًا لوقتك. نختبر التطبيق لا نختبرك أنت. هذا نموذج رقمي لجهاز فحص انكسار يُلبس على الرأس ويتحكّم به الأخصائي من التطبيق، والمريض هنا افتراضي ترى ما يراه في صورة اللوحة. فكّر بصوت عالٍ أثناء العمل، وقل ما تتوقّعه وما يفاجئك. لن أساعدك إلا إذا توقّفت تمامًا. ستستغرق الجلسة نحو 20 دقيقة، ولن نسجّل اسمك. هل توافق على المشاركة؟»</div>
-
-<h2>4. المهام ومعيار النجاح</h2>
-<table>
-<tr><th style="width:9mm">#</th><th>المهمة (تُقرأ للمشارك)</th><th style="width:62mm">معيار النجاح (للمراقب)</th></tr>
-<tr><td>T1</td><td>«ابدأ فحص العين اليمنى، واحجب العين اليسرى.»</td><td>اختار العين اليمنى وحجب اليسرى دون مساعدة.</td></tr>
-<tr><td>T2</td><td>«جد أفضل قوة كروية لهذا المريض.»</td><td>المكافئ الكروي في «وصفة البعيد» ضمن <span class="ltr">±0.25 D</span> من <span class="ltr">+0.88 D</span>، مع استعمال أقصى موجب أو الضباب.</td></tr>
-<tr><td>T3</td><td>«حسّن الأسطوانة ومحورها بالأسطوانة المتقاطعة.»</td><td>الأسطوانة ضمن <span class="ltr">±0.25 D</span> من <span class="ltr">−1.25</span>، والمحور ضمن <span class="ltr">±10°</span> من <span class="ltr">90°</span>.</td></tr>
-<tr><td>T4</td><td>«احفظ نتيجة العين ونزّل سجل الفحص.»</td><td>أدخل مسافة القمة وPD، وحفظ بعد CONFIRMED، ونزّل الملف.</td></tr>
-<tr><td>T5</td><td>يضغط المراقب «محاكاة: فصل حسّاس» أثناء الحركة، ثم يقول: «تابع الفحص.»</td><td>لاحظ العطل، ولم يحاول حفظ نتيجة «غير معروف»، وأصلح ثم أعاد الضبط (بإرشاد اللافتة).</td></tr>
+<table class="kv">
+  <tr><td>رقم الوثيقة</td><td><span class="ltr">BASIRA-UT-PRO-001</span></td></tr>
+  <tr><td>الإصدار</td><td>1.0</td></tr>
+  <tr><td>تاريخ الإصدار</td><td>13 نوفمبر 2026</td></tr>
+  <tr><td>الحالة</td><td>مسودة للمراجعة</td></tr>
+  <tr><td>التصنيف</td><td>داخلي — فريق المشروع <span class="ltr">MED-VF7H45</span></td></tr>
+  <tr><td>المتطلب المرتبط</td><td><span class="ltr">U1</span> في خطة التحقق والمصادقة (<span class="ltr">docs/VERIFICATION_AND_VALIDATION.md</span>)</td></tr>
 </table>
-<p class="small">نتيجة كل مهمة: 1 = نجح دون مساعدة · 0.5 = نجح بمساعدة · 0 = لم ينجح. سجّلي الزمن بالثواني، وعدد الأخطاء (فعل خاطئ يتراجع عنه)، وكل كلمة يقولها عن الحيرة أو المفاجأة.</p>
 
-<h2 class="page">5. ورقة الملاحظة — المشارك: <span class="ltr">P__</span> &nbsp; الدور: ____________ &nbsp; سنوات الخبرة: ___</h2>
-<table>
-<tr><th style="width:12mm">المهمة</th><th style="width:22mm">النتيجة <span class="ltr">1 / 0.5 / 0</span></th><th style="width:20mm">الزمن (ث)</th><th style="width:18mm">الأخطاء</th><th>الملاحظات وأقوال المشارك</th></tr>
-<tr><td>T1</td><td></td><td></td><td></td><td style="height:16mm"></td></tr>
-<tr><td>T2</td><td></td><td></td><td></td><td style="height:16mm"></td></tr>
-<tr><td>T3</td><td></td><td></td><td></td><td style="height:16mm"></td></tr>
-<tr><td>T4</td><td></td><td></td><td></td><td style="height:16mm"></td></tr>
-<tr><td>T5</td><td></td><td></td><td></td><td style="height:16mm"></td></tr>
+<h3>الاعتماد</h3>
+<table class="sig">
+  <tr><th style="width:30mm">الدور</th><th style="width:44mm">الاسم</th><th>التوقيع</th><th style="width:30mm">التاريخ</th></tr>
+  <tr><td>الإعداد</td><td>محمد حسين</td><td></td><td></td></tr>
+  <tr><td>المراجعة السريرية</td><td>أسماء السباعي</td><td></td><td></td></tr>
+  <tr><td>مراجعة التحليل</td><td>منى بايزيد</td><td></td><td></td></tr>
+  <tr><td>الاعتماد</td><td>أسماء السباعي، قائدة المشروع</td><td></td><td></td></tr>
 </table>
-<h3>الوصفة النهائية التي وصل إليها المشارك (من «وصفة البعيد»)</h3>
-<div class="lines"></div>
-<h3>أسئلة مفتوحة (بعد المهام)</h3>
+
+<h3>سجل المراجعات</h3>
+<table>
+  <tr><th style="width:18mm" class="c">الإصدار</th><th style="width:28mm">التاريخ</th><th>وصف التغيير</th><th style="width:30mm">المُعدّ</th></tr>
+  <tr><td class="c">1.0</td><td>2026-11-13</td><td>الإصدار الأول</td><td>محمد حسين</td></tr>
+</table>
+
+<h3>المحتويات</h3>
+<table class="toc">
+  <tr><td class="n">1</td><td>الغرض</td><td class="n">8</td><td>إجراء الجلسة</td></tr>
+  <tr><td class="n">2</td><td>النطاق</td><td class="n">9</td><td>المقاييس ومعايير القبول</td></tr>
+  <tr><td class="n">3</td><td>المراجع</td><td class="n">10</td><td>معالجة البيانات والتحليل</td></tr>
+  <tr><td class="n">4</td><td>التعاريف</td><td class="n">11</td><td>السجلات</td></tr>
+  <tr><td class="n">5</td><td>المسؤوليات</td><td class="n">أ</td><td>نموذج الملاحظة <span class="ltr">UT-F01</span></td></tr>
+  <tr><td class="n">6</td><td>المشاركون والاعتبارات الأخلاقية</td><td class="n">ب</td><td>استبيان SUS <span class="ltr">UT-F02</span></td></tr>
+  <tr><td class="n">7</td><td>المعدات والتجهيز</td><td class="n">ج</td><td>سجل المشكلات <span class="ltr">UT-F03</span></td></tr>
+</table>
+
+<!-- ======================= body ======================= -->
+<h2 class="pb">1. الغرض</h2>
+<p>يحدد هذا البروتوكول طريقة تقييم قابلية استخدام تطبيق الأخصائي في نظام بصيرة مع أخصائيي البصريات، ويجيب عن ثلاثة أسئلة:</p>
 <ol>
-  <li>ما أكثر ما أعاقك أو أربكك؟<div class="lines"></div></li>
-  <li>هل كان واضحًا لك الفرق بين القيمة «المطلوبة» والقيمة «المؤكَّدة من الحسّاسات»؟<div class="lines"></div></li>
-  <li>ما الذي ينقص لتستعمله في عيادتك أو في فحص ميداني؟<div class="lines"></div></li>
-  <li>مقارنة بجهاز Phoropter التقليدي: ما الذي تراه أفضل، وما الذي تراه أسوأ؟<div class="lines"></div></li>
-  <li>أي تعليق آخر:<div class="lines"></div></li>
+  <li>هل يُكمل الأخصائي فحص انكسار كاملًا للعين الواحدة دون مساعدة؟</li>
+  <li>ما المشكلات التي تعيق ذلك، وما شدّتها؟</li>
+  <li>ما تقييم المستخدمين لقابلية الاستخدام على مقياس SUS؟</li>
+</ol>
+<p>تُستعمل النتائج لتحسين التطبيق، ثم يُعاد الاختبار للتأكد من أن التحسين نجح.</p>
+
+<h2>2. النطاق</h2>
+<p><b>يشمل:</b> تطبيق الأخصائي في وضع المحاكاة، بالإصدار المحفوظ في المستودع (<span class="ltr">dist/BASIRA_app.html</span>)، مع مريض افتراضي داخل البرنامج.</p>
+<p><b>لا يشمل:</b> فحص أي شخص، أو استعمال الجهاز الفعلي، أو جمع بيانات صحية. ولا يقيس هذا الاختبار دقة الجهاز البصري، فذلك يخضع لإجراءات المعايرة والتحقق (<span class="ltr">docs/CALIBRATION.md</span>).</p>
+
+<h2>3. المراجع</h2>
+<table>
+  <tr><td class="c" style="width:9mm">1</td><td><span class="ltr">ISO 9241-11:2018</span>، بيئة التفاعل بين الإنسان والنظام — الجزء 11: قابلية الاستخدام، التعاريف والمفاهيم.</td></tr>
+  <tr><td class="c" style="width:9mm">2</td><td class="en">Brooke J. SUS: a "quick and dirty" usability scale. In: Usability Evaluation in Industry. Taylor &amp; Francis; 1996.</td></tr>
+  <tr><td class="c" style="width:9mm">3</td><td class="en">Nielsen J, Landauer TK. A mathematical model of the finding of usability problems. Proc. INTERCHI '93; 1993.</td></tr>
+  <tr><td class="c" style="width:9mm">4</td><td class="en">Sauro J. A Practical Guide to the System Usability Scale. Measuring Usability LLC; 2011.</td></tr>
+  <tr><td class="c" style="width:9mm">5</td><td>وثائق المشروع: خطة التحقق والمصادقة، وسجل التحسينات (<span class="ltr">docs/ITERATIONS.md</span>).</td></tr>
+</table>
+
+<h2>4. التعاريف</h2>
+<table style="page-break-inside:avoid">
+  <tr><th style="width:40mm">المصطلح</th><th>التعريف</th></tr>
+  <tr><td>المشارك</td><td>أخصائي البصريات الذي يؤدي المهام، ويُرمز له <span class="ltr">P1…P5</span>.</td></tr>
+  <tr><td>المراقب</td><td>عضو الفريق الذي يدير الجلسة ويسجّل الملاحظات ولا يساعد إلا وفق البند 8.4.</td></tr>
+  <tr><td>CONFIRMED</td><td>حالة الجهاز بعد أن تؤكّد الحسّاسات الإعداد. لا تُحفظ نتيجة قبلها.</td></tr>
+  <tr><td>وصفة البعيد</td><td>القيمة المؤكَّدة بعد تصحيح بُعد لوحة القراءة، كما يعرضها التطبيق.</td></tr>
+  <tr><td>أقصى موجب</td><td>أكثر قيمة موجبة للكروي تعطي أفضل حدّة إبصار، وهي نقطة النهاية المعتمدة.</td></tr>
+  <tr><td><span class="ltr">SUS</span></td><td>مقياس قابلية الاستخدام، من عشرة بنود، ونتيجته من 0 إلى 100 (المرجع 2).</td></tr>
+  <tr><td>شدّة المشكلة</td><td>0 = ليست مشكلة · 1 = شكلية · 2 = بسيطة · 3 = كبيرة · 4 = تمنع إكمال المهمة.</td></tr>
+</table>
+
+<h2>5. المسؤوليات</h2>
+<table>
+  <tr><th style="width:40mm">الدور</th><th style="width:40mm">الشخص</th><th>المسؤولية</th></tr>
+  <tr><td>قائدة الاختبار</td><td>أسماء السباعي</td><td>دعوة المشاركين، وإدارة الجلسات، والحكم السريري على نجاح المهام.</td></tr>
+  <tr><td>المراقب</td><td>عضو من الفريق</td><td>التوقيت وتعبئة النموذج <span class="ltr">UT-F01</span>.</td></tr>
+  <tr><td>محللة البيانات</td><td>منى بايزيد</td><td>إدخال البيانات وتحليلها وإعداد التقرير.</td></tr>
+  <tr><td>مسؤول البرمجيات</td><td>محمد حسين</td><td>تجهيز الإصدار المختبَر، وتنفيذ التحسينات، وتحديث سجل التحسينات.</td></tr>
+</table>
+
+<h2>6. المشاركون والاعتبارات الأخلاقية</h2>
+<ul>
+  <li><b>العدد:</b> خمسة مشاركين. هذا العدد يكشف عادة أغلب مشكلات الاستخدام الكبيرة (المرجع 3)، لكنه لا يكفي لتعميم درجة SUS.</li>
+  <li><b>معايير الإدراج:</b> أخصائي بصريات مرخّص أو متدرّب امتياز يجري فحص الانكسار.</li>
+  <li><b>معايير الاستبعاد:</b> أعضاء الفريق، ومن رأى التطبيق قبل الجلسة.</li>
+  <li><b>الموافقة:</b> يُقرأ نص الافتتاح (البند 8.2)، وتُسجَّل الموافقة الشفهية في النموذج <span class="ltr">UT-F01</span>.</li>
+  <li><b>الخصوصية:</b> لا تُسجَّل الأسماء. يُحفظ الدور وسنوات الخبرة فقط، ولا يُسجَّل صوت ولا صورة إلا بموافقة صريحة.</li>
+  <li><b>الموافقة الأخلاقية:</b> تتحقق قائدة الاختبار من اشتراطات جامعة جدة قبل الجلسة الأولى، ويُوثَّق القرار في السجلات (البند 11).</li>
+</ul>
+
+<h2>7. المعدات والتجهيز</h2>
+<ol>
+  <li>حاسوب محمول أو جهاز لوحي يعمل عليه الملف <span class="ltr">dist/BASIRA_app.html</span>، ولا يحتاج إلى اتصال بالإنترنت.</li>
+  <li>ساعة توقيت، ونسخة مطبوعة من النماذج <span class="ltr">UT-F01</span> و<span class="ltr">UT-F02</span> لكل مشارك.</li>
+  <li>قبل كل جلسة: افتح الملف، واختر «محاكاة» ثم «اتصال»، ثم اختر المريض «حالة ب». لا تُظهر الوصفة الحقيقية أمام المشارك.</li>
+  <li>الوصفة الحقيقية للعين اليمنى (للمراقب فقط): <span class="ltr">+1.50 / −1.25 × 90</span>، أي مكافئ كروي <span class="ltr">+0.88 D</span>.</li>
+  <li>القيم التي تُعطى للمشارك عند طلبها: بُعد اللوحة 6 م، ومسافة القمة 13 مم، والمسافة بين الحدقتين 63 مم.</li>
 </ol>
 
-<h2 class="page">6. استبيان SUS (يملؤه المشارك)</h2>
-<p class="small">مقياس سهولة الاستخدام (System Usability Scale) لجون بروك (1996)، ويُستعمل مجانًا مع ذكر المصدر. تُستعمل الصيغة الإنجليزية الأصلية كما هي، فلا يُترجم إلا بصيغة عربية مُحكَّمة منشورة. «system» هنا يعني تطبيق بصيرة.</p>
-<table class="sus en">
-<tr><th class="n">#</th><th class="en" style="text-align:left">Statement</th><th class="c">1<br><span class="small">Strongly disagree</span></th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5<br><span class="small">Strongly agree</span></th></tr>
-<tr><td class="n">1</td><td>I think that I would like to use this system frequently.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">2</td><td>I found the system unnecessarily complex.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">3</td><td>I thought the system was easy to use.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">4</td><td>I think that I would need the support of a technical person to be able to use this system.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">5</td><td>I found the various functions in this system were well integrated.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">6</td><td>I thought there was too much inconsistency in this system.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">7</td><td>I would imagine that most people would learn to use this system very quickly.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">8</td><td>I found the system very cumbersome to use.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">9</td><td>I felt very confident using the system.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
-<tr><td class="n">10</td><td>I needed to learn a lot of things before I could get going with this system.</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td><td class="c">☐</td></tr>
+<h2>8. إجراء الجلسة</h2>
+<h3>8.1 المدة والترتيب</h3>
+<p>مدة الجلسة نحو 20 دقيقة، بالترتيب: الافتتاح (دقيقتان)، ثم المهام (12 دقيقة)، ثم الاستبيان والأسئلة (6 دقائق).</p>
+<h3>8.2 نص الافتتاح</h3>
+<p class="note">«شكرًا لوقتك. نختبر التطبيق ولا نختبرك. هذا نموذج رقمي لجهاز فحص انكسار يُلبس على الرأس ويتحكّم به الأخصائي من التطبيق، والمريض افتراضي، وصورة اللوحة تُظهر ما يراه. فكّر بصوت عالٍ: قل ما تتوقّعه وما يفاجئك. لن أساعدك إلا إذا توقّفت تمامًا. لن نسجّل اسمك. هل توافق على المشاركة؟»</p>
+<h3>8.3 المهام</h3>
+<table>
+  <tr><th style="width:11mm" class="c">الرمز</th><th>نص المهمة كما يُقرأ</th><th style="width:66mm">معيار النجاح</th></tr>
+  <tr><td class="c">T1</td><td>«ابدأ فحص العين اليمنى، واحجب العين اليسرى.»</td><td>اختار العين اليمنى وحجب اليسرى.</td></tr>
+  <tr><td class="c">T2</td><td>«جد أفضل قوة كروية لهذا المريض.»</td><td>المكافئ الكروي في «وصفة البعيد» ضمن <span class="ltr">±0.25 D</span> من <span class="ltr">+0.88 D</span>.</td></tr>
+  <tr><td class="c">T3</td><td>«حسّن الأسطوانة ومحورها بالأسطوانة المتقاطعة.»</td><td>الأسطوانة ضمن <span class="ltr">±0.25 D</span> من <span class="ltr">−1.25 D</span>، والمحور ضمن <span class="ltr">±10°</span> من <span class="ltr">90°</span>.</td></tr>
+  <tr><td class="c">T4</td><td>«احفظ نتيجة العين ونزّل سجل الفحص.»</td><td>أدخل مسافة القمة والمسافة بين الحدقتين، وحفظ بعد CONFIRMED، ونزّل الملف.</td></tr>
+  <tr><td class="c">T5</td><td>يضغط المراقب «محاكاة: فصل حسّاس» أثناء حركة الجهاز، ثم يقول: «تابع الفحص.»</td><td>لاحظ العطل، ولم يحفظ نتيجة غير مؤكَّدة، وأعاد الضبط.</td></tr>
 </table>
-<p class="small en">Participant: P__ &nbsp;&nbsp; Date: __________</p>
+<h3>8.4 قواعد التسجيل والمساعدة</h3>
+<ul>
+  <li>تُسجَّل نتيجة كل مهمة: 1 = نجح دون مساعدة، 0.5 = نجح بمساعدة، 0 = لم ينجح.</li>
+  <li>يُسجَّل الزمن بالثواني من نهاية قراءة المهمة إلى إعلان المشارك انتهاءه.</li>
+  <li>الخطأ هو فعل يتراجع عنه المشارك أو يقود إلى نتيجة خاطئة.</li>
+  <li>لا يساعد المراقب إلا بعد 60 ثانية من التوقف التام، وبتلميح واحد فقط، ويُسجَّل التلميح.</li>
+</ul>
+<h3>8.5 الختام</h3>
+<p>يملأ المشارك الاستبيان <span class="ltr">UT-F02</span> بنفسه، ثم يجيب عن الأسئلة المفتوحة في النموذج <span class="ltr">UT-F01</span>.</p>
 
-<h2>7. بعد الجلسات: التحليل ثم التحسين</h2>
+<h2>9. المقاييس ومعايير القبول</h2>
+<table>
+  <tr><th>المقياس</th><th style="width:70mm">معيار القبول (حدّده الفريق)</th></tr>
+  <tr><td>نسبة النجاح دون مساعدة في T1 وT4 وT5</td><td>4 من 5 مشاركين أو أكثر في كل مهمة</td></tr>
+  <tr><td>دقة الوصفة في T2 وT3</td><td>4 من 5 مشاركين أو أكثر ضمن المعيار</td></tr>
+  <tr><td>متوسط درجة SUS</td><td>68 أو أكثر، وهو المتوسط المنشور (المرجع 4)، ويُذكر معه فاصل الثقة 95 %</td></tr>
+  <tr><td>المشكلات من الشدّة 4</td><td>لا شيء بعد جولة التحسين</td></tr>
+</table>
+<p class="small">إذا لم يتحقق معيار، يُصلَح السبب، ثم تُعاد المهمة المتأثرة مع مشاركَين جديدَين على الأقل.</p>
+
+<h2>10. معالجة البيانات والتحليل</h2>
 <ol>
-  <li><b>إدخال البيانات:</b> انقلي كل ورقة إلى سطر في <span class="ltr">validation/usability_results.csv</span> (القالب في الحزمة).</li>
-  <li><b>التحليل:</b> شغّلي <span class="ltr">python3 validation/usability_summary.py validation/usability_results.csv</span>. يُخرج درجة SUS لكل مشارك والمتوسط مع فاصل ثقة 95 %، ونسبة نجاح كل مهمة، والزمن الوسيط. طريقة التصحيح: البنود الفردية = الإجابة − 1، والزوجية = 5 − الإجابة، والمجموع × 2.5.</li>
-  <li><b>ترتيب المشكلات:</b> رتّبيها حسب عدد من واجهها، ثم أصلحي أكبر مشكلة أو اثنتين في التطبيق.</li>
-  <li><b>إعادة الاختبار:</b> أعيدي المهمة المتأثرة مع مشاركَين اثنين، ثم سجّلي «قبل/بعد» في <span class="ltr">docs/ITERATIONS.md</span> وفي شريحة «مراحل النضج».</li>
+  <li>تُنقل بيانات كل نموذج إلى سطر في الملف <span class="ltr">validation/usability_results.csv</span>، باستعمال القالب الموجود في المستودع.</li>
+  <li>يُشغَّل الأمر <span class="ltr">python3 validation/usability_summary.py validation/usability_results.csv</span>. يُخرج درجة SUS لكل مشارك، والمتوسط مع فاصل ثقة 95 %، ونسبة النجاح والزمن الوسيط لكل مهمة.</li>
+  <li><b>تصحيح SUS (المرجع 2):</b> البنود الفردية = الإجابة − 1، والزوجية = 5 − الإجابة، والمجموع × 2.5.</li>
+  <li>تُجمع المشكلات في النموذج <span class="ltr">UT-F03</span> وتُرتَّب حسب الشدّة ثم عدد المشاركين المتأثرين.</li>
+  <li>تُعالج المشكلات من الشدّة 3 و4 أولًا، ثم يُسجَّل «قبل/بعد» في <span class="ltr">docs/ITERATIONS.md</span>.</li>
 </ol>
-<p class="small">مرجعان للتفسير: متوسط SUS المنشور عبر مئات الدراسات قريب من 68؛ ومع 5 مشاركين يكون فاصل الثقة واسعًا، فاعرضيه كما هو ولا تُعمّمي.</p>
+
+<h2>11. السجلات</h2>
+<table>
+  <tr><th>السجل</th><th style="width:72mm">مكان الحفظ</th></tr>
+  <tr><td>النماذج الورقية <span class="ltr">UT-F01</span> و<span class="ltr">UT-F02</span></td><td>ملف ورقي لدى قائدة الاختبار، ونسخة ممسوحة في مجلد الفريق</td></tr>
+  <tr><td>بيانات الجلسات المجهولة</td><td><span class="ltr">validation/usability_results.csv</span></td></tr>
+  <tr><td>سجل المشكلات <span class="ltr">UT-F03</span> والتقرير</td><td>المستودع، مجلد <span class="ltr">validation/</span></td></tr>
+  <tr><td>قرار الموافقة الأخلاقية</td><td>مجلد الفريق</td></tr>
+</table>
+
+<!-- ======================= Form A ======================= -->
+<div class="pb"></div>
+<div class="form-title"><h2>الملحق أ — نموذج الملاحظة</h2><span class="code">UT-F01 · Rev. 1.0</span></div>
+<p>رمز المشارك: <span class="field"></span> الدور: <span class="field"></span> سنوات الخبرة: <span class="field" style="min-width:16mm"></span></p>
+<p>التاريخ: <span class="field"></span> المراقب: <span class="field"></span> الموافقة الشفهية: <span class="box"></span> نعم</p>
+<table>
+  <tr><th style="width:13mm" class="c">المهمة</th><th style="width:22mm" class="c">النتيجة<br><span class="ltr small">1 / 0.5 / 0</span></th><th style="width:18mm" class="c">الزمن (ث)</th><th style="width:16mm" class="c">الأخطاء</th><th style="width:16mm" class="c">تلميح</th><th>الملاحظات وأقوال المشارك</th></tr>
+  <tr><td class="c">T1</td><td></td><td></td><td></td><td></td><td style="height:15mm"></td></tr>
+  <tr><td class="c">T2</td><td></td><td></td><td></td><td></td><td style="height:15mm"></td></tr>
+  <tr><td class="c">T3</td><td></td><td></td><td></td><td></td><td style="height:15mm"></td></tr>
+  <tr><td class="c">T4</td><td></td><td></td><td></td><td></td><td style="height:15mm"></td></tr>
+  <tr><td class="c">T5</td><td></td><td></td><td></td><td></td><td style="height:15mm"></td></tr>
+</table>
+<p>الوصفة النهائية التي وصل إليها المشارك («وصفة البعيد»): <span class="field" style="min-width:70mm"></span></p>
+<h3>الأسئلة المفتوحة</h3>
+<ol>
+  <li>ما أكثر ما أعاقك أو أربكك أثناء الفحص؟<div class="line"></div></li>
+  <li>هل كان واضحًا الفرق بين القيمة «المطلوبة» والقيمة «المؤكَّدة من الحسّاسات»؟<div class="line"></div></li>
+  <li>ما الذي ينقص لتستعمله في عيادتك أو في فحص ميداني؟<div class="line"></div></li>
+  <li>مقارنة بجهاز Phoropter التقليدي: ما الأفضل، وما الأسوأ؟<div class="line"></div></li>
+  <li>ملاحظات أخرى:<div class="line"></div></li>
+</ol>
+
+<!-- ======================= Form B ======================= -->
+<div class="pb"></div>
+<div class="form-title"><h2>الملحق ب — استبيان SUS</h2><span class="code">UT-F02 · Rev. 1.0</span></div>
+<p class="small">يملؤه المشارك. الصيغة الإنجليزية الأصلية (المرجع 2) تُستعمل كما هي؛ وكلمة «system» تعني تطبيق بصيرة. ضع علامة في مربع واحد لكل عبارة.</p>
+<table class="en">
+  <tr><th class="c" style="width:8mm">#</th><th>Statement</th><th class="c" style="width:15mm">Strongly disagree<br>1</th><th class="c" style="width:9mm">2</th><th class="c" style="width:9mm">3</th><th class="c" style="width:9mm">4</th><th class="c" style="width:15mm">Strongly agree<br>5</th></tr>
+  <tr><td class="c">1</td><td>I think that I would like to use this system frequently.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">2</td><td>I found the system unnecessarily complex.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">3</td><td>I thought the system was easy to use.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">4</td><td>I think that I would need the support of a technical person to be able to use this system.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">5</td><td>I found the various functions in this system were well integrated.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">6</td><td>I thought there was too much inconsistency in this system.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">7</td><td>I would imagine that most people would learn to use this system very quickly.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">8</td><td>I found the system very cumbersome to use.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">9</td><td>I felt very confident using the system.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+  <tr><td class="c">10</td><td>I needed to learn a lot of things before I could get going with this system.</td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td><td class="c"><span class="box"></span></td></tr>
+</table>
+<p class="en small">Participant code: ________ &nbsp;&nbsp;&nbsp; Date: ____________</p>
+
+<!-- ======================= Form C ======================= -->
+<div class="pb"></div>
+<div class="form-title"><h2>الملحق ج — سجل المشكلات</h2><span class="code">UT-F03 · Rev. 1.0</span></div>
+<p class="small">تعبّئه محللة البيانات بعد الجلسات. الشدّة وفق التعريف في البند 4.</p>
+<table>
+  <tr><th style="width:9mm" class="c">#</th><th style="width:13mm" class="c">المهمة</th><th>وصف المشكلة</th><th style="width:18mm" class="c">المشاركون</th><th style="width:13mm" class="c">الشدّة</th><th style="width:40mm">الإجراء</th><th style="width:20mm" class="c">نتيجة إعادة الاختبار</th></tr>
+  <tr><td class="c">1</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">2</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">3</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">4</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">5</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">6</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">7</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="c">8</td><td></td><td style="height:12mm"></td><td></td><td></td><td></td><td></td></tr>
+</table>
+<p class="small" style="margin-top:6mm">نهاية الوثيقة <span class="ltr">BASIRA-UT-PRO-001</span></p>
 </body>
 </html>
