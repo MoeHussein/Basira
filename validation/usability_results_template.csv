@@ -1,0 +1,4 @@
+# One row per participant (see submission/BASIRA_usability_test_kit.pdf). Task result: 1 = unaided, 0.5 = with help, 0 = failed.
+# sus1..sus10 = answers 1-5 to the English SUS statements. Lines starting with # are ignored (the P1 line is an example).
+participant,role,years,T1,T1_s,T2,T2_s,T3,T3_s,T4,T4_s,T5,T5_s,errors,sus1,sus2,sus3,sus4,sus5,sus6,sus7,sus8,sus9,sus10,top_issue
+# P1,optometrist,4,1,35,1,240,0.5,310,1,60,1,45,2,4,2,4,2,4,2,4,2,4,2,"example only - axis buttons unclear"
